@@ -1,0 +1,25 @@
+.vs
+.vsconfig
+.svn
+.idea
+*.VC.db
+*.opensdf
+*.opendb
+*.sdf
+*.sln
+*.suo
+*.xcodeproj
+*.xcworkspace
+
+# 虚幻常规目录忽略
+**/Binaries
+**/Intermediate
+Build/*
+Content/*
+DerivedDataCache/*
+Saved/*
+EditorSaved/*
+
+# 插件默认不入库，如需入库，单独添加规则
+Plugins/*
+!Plugins/GameFeatures

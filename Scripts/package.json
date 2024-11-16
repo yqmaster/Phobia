@@ -1,0 +1,15 @@
+{
+    "name": "Phobia",
+    "private": true,
+    "workspaces": [],
+    "devDependencies": {},
+    "scripts": {
+        "content-update": "node ./scripts/content-update.js",
+        "post-pull": "node ./scripts/post-pull.js",
+        "regenerate-vs": "node ./scripts/regenerate-vs-project",
+        "start-vs": "node ./scripts/start-vs"
+    },
+    "repository": {
+        "content": "svn://5.tcp.vip.cpolar.cn:14159/Rester/Phobia/trunk/Content"
+    }
+}
