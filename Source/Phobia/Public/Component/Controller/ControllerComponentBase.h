@@ -14,9 +14,12 @@ class PHOBIA_API UControllerComponentBase : public UActorComponent
 public:
 	UControllerComponentBase();
 
-protected:
 	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason);
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+protected:
+	UFUNCTION()
+	virtual void OnPossessedPawnChange(APawn* OldPawn, APawn* NewPawn);
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Transient)

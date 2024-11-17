@@ -12,11 +12,11 @@ class PHOBIA_API APCharacterBase : public ACharacter
 public:
 	APCharacterBase();
 
-protected:
 	virtual void BeginPlay() override;
-
-public:	
 	virtual void Tick(float DeltaTime) override;
-
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+public:
+	UFUNCTION(BlueprintCallable)
+	UCharacterMovementComponent* GetCharacterMovementComponent();
 };

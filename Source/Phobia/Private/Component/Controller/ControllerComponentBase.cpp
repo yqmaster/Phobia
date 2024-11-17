@@ -6,7 +6,6 @@ UControllerComponentBase::UControllerComponentBase()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-
 void UControllerComponentBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -19,12 +18,22 @@ void UControllerComponentBase::BeginPlay()
 	}
 
 	PlayerController = Controller;
+	PlayerController->OnPossessedPawnChanged.AddDynamic(this, &UControllerComponentBase::OnPossessedPawnChange);
 }
-
 
 void UControllerComponentBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	Super::EndPlay(EndPlayReason);
+	if (PlayerController)
+	{
+		PlayerController->OnPossessedPawnChanged.RemoveDynamic(this, &UControllerComponentBase::OnPossessedPawnChange);
+	}
 
 	PlayerController = nullptr;
+
+	Super::EndPlay(EndPlayReason);
+}
+
+void UControllerComponentBase::OnPossessedPawnChange(APawn* OldPawn, APawn* NewPawn)
+{
+
 }

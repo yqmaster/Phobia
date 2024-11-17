@@ -1,4 +1,5 @@
 #include "Character/PCharacterBase.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 APCharacterBase::APCharacterBase()
 {
@@ -22,5 +23,10 @@ void APCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+UCharacterMovementComponent* APCharacterBase::GetCharacterMovementComponent()
+{
+	return  Cast<UCharacterMovementComponent>(GetMovementComponent());
 }
 
