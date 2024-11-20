@@ -46,7 +46,7 @@ protected:
 	/**
 	 * @brief 更新朝向
 	 */
-	void UpdateLookAt();
+	void UpdateLookAt(float DeltaTime);
 
 	/**
 	 * @brief 电量衰减
@@ -58,5 +58,8 @@ private:
 	float Quantity;					// 电量
 
 	float InitialIntensity;			// 初始光源强度
-	float PhotoelectricityRatio;	// 光源强度与电池容量比
+	float PhotoelectricityRatio;	// 光源强度与电池容量比, 用于同步电量与光源强度的衰减量
+	float Latency;					// 旋转延时
+	FRotator TargetRotation;
+	FRotator SelfRotation;
 };
