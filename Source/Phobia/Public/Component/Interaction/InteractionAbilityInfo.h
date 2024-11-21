@@ -16,9 +16,19 @@ class PHOBIA_API UInteractionAbilityInfo : public UObject
 
 public:
 	// 初始化 AbilityInfo
-	void InitAbilityInfo(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
-	// 释放 AbilityInfo
-	void UnInitAbilityInfo(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
+	void InitAbilityInfo(AActor* InOwnerActor, UInteractionItemComponent* InOwnerComponent);
+	// 逆初始化 AbilityInfo
+	void UnInitAbilityInfo(AActor* InOwnerActor, UInteractionItemComponent* InOwnerComponent);
+
+	// 激活 AbilityInfo
+	void ActiveAbilityInfo();
+	// 注销 AbilityInfo
+	void DeActiveAbilityInfo();
+
+	// 触发事件开始
+	void TriggerAbilityInfoEventStart();
+	// 触发事件结束
+	void TriggerAbilityInfoEventEnd();
 
 public:
 	// TODO 这里的宏都是中间产物，写完后可以都删了，应该也没有其他地方需要 New 一个 UInteractionAbilityInfo 了
@@ -30,4 +40,14 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
 	TArray<TObjectPtr<UInteractionOperatorBase>> Operators;
+
+private:
+	UPROPERTY(Transient)
+	TArray<TObjectPtr<UInteractionOperatorBase>> StartingOperators;
+
+	UPROPERTY(Transient)
+	TObjectPtr<AActor> OwnerActor;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UInteractionItemComponent> OwnerComponent;
 };

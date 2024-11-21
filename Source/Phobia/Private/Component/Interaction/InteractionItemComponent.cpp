@@ -1,5 +1,6 @@
 #include "Component/Interaction/InteractionItemComponent.h"
 
+#include "Component/Interaction/InteractionAbilityDataAsset.h"
 #include "Component/Interaction/InteractionAbilityInfo.h"
 
 UInteractionItemComponent::UInteractionItemComponent()
@@ -13,8 +14,14 @@ void UInteractionItemComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (InteractionAbilityAsset)
+	{
+		AbilityInfos.Append(InteractionAbilityAsset->TestAbilityInfos);
+	}
+
 	// ...
-	const AActor* OwnerActor = GetOwner();
+	AActor* OwnerActor = GetOwner();
+
 	for (UInteractionAbilityInfo* AbilityInfo : AbilityInfos)
 	{
 		if (AbilityInfo)
@@ -23,23 +30,24 @@ void UInteractionItemComponent::BeginPlay()
 		}
 	}
 
-	for (UInteractionAbilityInfo* AbilityInfo : TestAbilityInfos)
+	for (UInteractionAbilityInfo* AbilityInfo : AbilityInfos)
 	{
 		if (AbilityInfo)
 		{
-			AbilityInfo->InitAbilityInfo(OwnerActor, this);
+			AbilityInfo->ActiveAbilityInfo();
 		}
 	}
 }
 
 void UInteractionItemComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	const AActor* OwnerActor = GetOwner();
-	for (UInteractionAbilityInfo* AbilityInfo : TestAbilityInfos)
+	AActor* OwnerActor = GetOwner();
+
+	for (UInteractionAbilityInfo* AbilityInfo : AbilityInfos)
 	{
 		if (AbilityInfo)
 		{
-			AbilityInfo->UnInitAbilityInfo(OwnerActor, this);
+			AbilityInfo->DeActiveAbilityInfo();
 		}
 	}
 
