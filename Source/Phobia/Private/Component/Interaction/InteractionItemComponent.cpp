@@ -16,10 +16,12 @@ void UInteractionItemComponent::BeginPlay()
 
 	if (InteractionAbilityAsset)
 	{
-		AbilityInfos.Append(InteractionAbilityAsset->TestAbilityInfos);
+		for (UInteractionAbilityInfo* AbilityInfo : InteractionAbilityAsset->GetAllAbilityInfos())
+		{
+			AbilityInfos.Add(AbilityInfo);
+		}
 	}
 
-	// ...
 	AActor* OwnerActor = GetOwner();
 
 	for (UInteractionAbilityInfo* AbilityInfo : AbilityInfos)
@@ -69,10 +71,12 @@ void UInteractionItemComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	// ...
 }
 
-void UInteractionItemComponent::InteractInScene(ETriggerEvent InTriggerEvent)
+void UInteractionItemComponent::TakeInteractionByClick(AActor* Taker, EInteractionRoleType RoleType) const
 {
-	if (OnInteractOnScene.IsBound())
-	{
-		OnInteractOnScene.Broadcast(InTriggerEvent);
-	}
+	OnInteractByClick.Broadcast(Taker, RoleType);
+}
+
+void UInteractionItemComponent::TakeInteractionByPress(AActor* Taker, EInteractionRoleType RoleType, bool IsStart) const
+{
+	OnInteractByPress.Broadcast(Taker, RoleType, IsStart);
 }

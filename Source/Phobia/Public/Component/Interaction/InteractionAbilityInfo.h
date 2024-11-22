@@ -26,9 +26,9 @@ public:
 	void DeActiveAbilityInfo();
 
 	// 触发事件开始
-	void TriggerAbilityInfoEventStart();
+	void TriggerAbilityInfoEventStart(AActor* TakerActor);
 	// 触发事件结束
-	void TriggerAbilityInfoEventEnd();
+	void TriggerAbilityInfoEventEnd(AActor* TakerActor);
 
 public:
 	// TODO 这里的宏都是中间产物，写完后可以都删了，应该也没有其他地方需要 New 一个 UInteractionAbilityInfo 了

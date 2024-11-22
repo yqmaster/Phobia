@@ -4,16 +4,6 @@
 #include "Component/Interaction/InteractionConfigBase.h"
 #include "InteractionEventBase.generated.h"
 
-class UInteractionItemComponent;
-
-// 输入触发类型
-UENUM(BlueprintType)
-enum class EInputTriggerType : uint8
-{
-	None	UMETA(DisplayName = "空，无意义"),
-	Click	UMETA(DisplayName = "单击"),
-	Press	UMETA(DisplayName = "长按"),
-};
 
 /**
  *
@@ -36,10 +26,14 @@ protected:
 	 */
 
 	// C++ 实现当事件激活
-	virtual void EventActive(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent){};
+	virtual void EventActive(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
+	{
+	};
 
 	// C++ 实现当事件注销
-	virtual void EventDeActive(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent){};
+	virtual void EventDeActive(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
+	{
+	};
 
 	// 蓝图 实现当事件激活
 	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "Event Active"))
@@ -54,21 +48,16 @@ protected:
 	 */
 
 	// C++ 在事件开始触发时调用
-	void TriggerEventStart();
+	void TriggerEventStart(AActor* TakerActor);
 
 	// C++ 在事件结束触发时调用
-	void TriggerEventEnd();
-
+	void TriggerEventEnd(AActor* TakerActor);
 
 	// 蓝图 在事件开始触发时调用
 	UFUNCTION(BlueprintCallable)
-	void CallTriggerEventStart();
+	void CallTriggerEventStart(AActor* TakerActor);
 
 	// 蓝图 在事件结束触发时调用
 	UFUNCTION(BlueprintCallable)
-	void CallTriggerEventEnd();
-
-public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	EInputTriggerType InputType = EInputTriggerType::None;
+	void CallTriggerEventEnd(AActor* TakerActor);
 };

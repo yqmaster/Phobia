@@ -4,34 +4,12 @@
 #include "Components/ActorComponent.h"
 #include "InteractionItemComponent.generated.h"
 
-enum class ETriggerEvent : uint8;
-class UInteractionOperatorBase;
-class UInteractionEventBase;
-class UInteractionConditionBase;
 class UInteractionAbilityInfo;
 class UInteractionAbilityDataAsset;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractOnScene, ETriggerEvent, TriggerEvent);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractOnHand, ETriggerEvent, TriggerEvent);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractOnPut, ETriggerEvent, TriggerEvent);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractOnDrop, ETriggerEvent, TriggerEvent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInteractByClick, AActor*, TakerActor, EInteractionRoleType, RoleType);
 
-// 可拾取物品的丢弃类型
-UENUM(BlueprintType)
-enum class EDropType : uint8
-{
-	None	UMETA(DisplayName = "空，无意义"),
-	Trough	UMETA(DisplayName = "抛物线丢弃"),
-	Drop	UMETA(DisplayName = "垂直丢弃"),
-};
-
-// 可交互物品的作用位置
-UENUM(BlueprintType)
-enum class EInteractionRoleType : uint8
-{
-	Scene	UMETA(DisplayName = "场景"),
-	Hand	UMETA(DisplayName = "手上"),
-};
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnInteractByPress, AActor*, TakerActor, EInteractionRoleType, RoleType, bool, IsStart);
 
 UCLASS(Blueprintable, abstract, ClassGroup = (Interaction))
 class PHOBIA_API UInteractionItemComponent : public UActorComponent
@@ -48,11 +26,17 @@ protected:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void InteractInScene(ETriggerEvent InTriggerEvent);
+	void TakeInteractionByClick(AActor* Taker, EInteractionRoleType RoleType) const;
+
+	UFUNCTION(BlueprintCallable)
+	void TakeInteractionByPress(AActor* Taker, EInteractionRoleType RoleType, bool IsStart) const;
 
 public:
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
-	FOnInteractOnScene OnInteractOnScene;
+	FOnInteractByClick OnInteractByClick;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnInteractByPress OnInteractByPress;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = Ability, meta = (DisplayName = "交互配置表"))

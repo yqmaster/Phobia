@@ -13,27 +13,28 @@ class PHOBIA_API UInteractionOperatorBase : public UInteractionConfigBase
 	GENERATED_BODY()
 
 public:
+	void StartDoOperator(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
 
-	void StartDoOperator(AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
-
-	void EndDoOperator(AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
+	void EndDoOperator(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
 
 protected:
 	/**
 	 * 执行操作
 	 */
 
-	 // C++ 实现开始执行操作
-	virtual void DoOperatorBegin(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent) {};
+	// C++ 实现开始执行操作
+	virtual void DoOperatorBegin(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
+
 
 	// C++ 实现结束执行操作
-	virtual void DoOperatorEnd(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent) {};
+	virtual void DoOperatorEnd(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
+
 
 	// 蓝图 实现开始执行操作
 	UFUNCTION(BlueprintNativeEvent, meta = (DisplayName = "Do Operator Begin"))
-	void ReceiveDoOperatorBegin(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
+	void ReceiveDoOperatorBegin(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
 
 	// 蓝图 实现结束执行操作
 	UFUNCTION(BlueprintNativeEvent, meta = (DisplayName = "Do Operator End"))
-	void ReceiveDoOperatorEnd(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
+	void ReceiveDoOperatorEnd(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
 };

@@ -62,7 +62,7 @@ void UInteractionAbilityInfo::DeActiveAbilityInfo()
 	}
 }
 
-void UInteractionAbilityInfo::TriggerAbilityInfoEventStart()
+void UInteractionAbilityInfo::TriggerAbilityInfoEventStart(AActor* TakerActor)
 {
 	// 条件检查
 	bool CheckCondition = true;
@@ -79,15 +79,16 @@ void UInteractionAbilityInfo::TriggerAbilityInfoEventStart()
 
 	for (UInteractionOperatorBase* Operator : Operators)
 	{
-		Operator->StartDoOperator(OwnerActor, OwnerComponent);
+		Operator->StartDoOperator(TakerActor, OwnerActor, OwnerComponent);
 		StartingOperators.Add(Operator);
 	}
 }
 
-void UInteractionAbilityInfo::TriggerAbilityInfoEventEnd()
+void UInteractionAbilityInfo::TriggerAbilityInfoEventEnd(AActor* TakerActor)
 {
-	StartingOperators.RemoveAllSwap([this](UInteractionOperatorBase* Operator) {
-		Operator->EndDoOperator(OwnerActor, OwnerComponent);
+	StartingOperators.RemoveAllSwap([this, TakerActor](UInteractionOperatorBase* Operator)
+	{
+		Operator->EndDoOperator(TakerActor, OwnerActor, OwnerComponent);
 		return true;
 	});
 }

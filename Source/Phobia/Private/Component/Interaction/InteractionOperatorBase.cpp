@@ -1,23 +1,29 @@
 #include "Component/Interaction/InteractionOperatorBase.h"
 
-void UInteractionOperatorBase::StartDoOperator(AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
+void UInteractionOperatorBase::StartDoOperator(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
 {
-	DoOperatorBegin(OwnerActor, OwnerComponent);
-	ReceiveDoOperatorBegin(OwnerActor, OwnerComponent);
+	DoOperatorBegin(TakerActor, OwnerActor, OwnerComponent);
+	ReceiveDoOperatorBegin(TakerActor, OwnerActor, OwnerComponent);
 }
 
-void UInteractionOperatorBase::EndDoOperator(AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
+void UInteractionOperatorBase::EndDoOperator(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
 {
-	ReceiveDoOperatorEnd(OwnerActor, OwnerComponent);
-	DoOperatorEnd(OwnerActor, OwnerComponent);
+	ReceiveDoOperatorEnd(TakerActor, OwnerActor, OwnerComponent);
+	DoOperatorEnd(TakerActor, OwnerActor, OwnerComponent);
 }
 
-void UInteractionOperatorBase::ReceiveDoOperatorBegin_Implementation(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
+void UInteractionOperatorBase::DoOperatorBegin(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
 {
-
 }
 
-void UInteractionOperatorBase::ReceiveDoOperatorEnd_Implementation(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
+void UInteractionOperatorBase::DoOperatorEnd(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
 {
+}
 
+void UInteractionOperatorBase::ReceiveDoOperatorBegin_Implementation(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
+{
+}
+
+void UInteractionOperatorBase::ReceiveDoOperatorEnd_Implementation(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
+{
 }

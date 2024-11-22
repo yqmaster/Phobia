@@ -14,29 +14,28 @@ void UInteractionEventBase::DeActiveEvent(const AActor* OwnerActor, UInteraction
 	EventDeActive(OwnerActor, OwnerComponent);
 }
 
-void UInteractionEventBase::TriggerEventStart()
+void UInteractionEventBase::TriggerEventStart(AActor* TakerActor)
 {
 	if (AbilityInfo)
 	{
-		AbilityInfo->TriggerAbilityInfoEventStart();
+		AbilityInfo->TriggerAbilityInfoEventStart(TakerActor);
 	}
 }
 
-void UInteractionEventBase::TriggerEventEnd()
+void UInteractionEventBase::TriggerEventEnd(AActor* TakerActor)
 {
 	if (AbilityInfo)
 	{
-		AbilityInfo->TriggerAbilityInfoEventEnd();
+		AbilityInfo->TriggerAbilityInfoEventEnd(TakerActor);
 	}
 }
 
-void UInteractionEventBase::CallTriggerEventStart()
+void UInteractionEventBase::CallTriggerEventStart(AActor* TakerActor)
 {
-	TriggerEventStart();
+	TriggerEventStart(TakerActor);
 }
 
-
-void UInteractionEventBase::CallTriggerEventEnd()
+void UInteractionEventBase::CallTriggerEventEnd(AActor* TakerActor)
 {
-	TriggerEventEnd();
+	TriggerEventEnd(TakerActor);
 }
