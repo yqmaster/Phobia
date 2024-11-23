@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,9 +5,9 @@
 #include "FlashLightComponent.generated.h"
 
 /**
- * 手电组件
+ * @brief 手电组件
  */
-UCLASS()
+UCLASS(Blueprintable, abstract, ClassGroup = (FlashLightComponent))
 class PHOBIA_API UFlashLightComponent : public USpotLightComponent
 {
 	GENERATED_BODY()
@@ -54,12 +52,21 @@ protected:
 	void PowerDecay(float DeltaTime);
 	
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Flash Light", meta = (DisplayName = "Quantity"), meta = (AllowPrivateAccess = "true"))
-	float Quantity;					// 电量
+	// 默认总电量
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flash Light", meta = (DisplayName = "电池总电量"), meta = (AllowPrivateAccess = "true"))
+	float DefaultFlashLightQuantity;
+	// 默认衰减计时
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Flash Light", meta = (DisplayName = "延时旋转时间(s)"), meta = (AllowPrivateAccess = "true"))
+	float DefaultLatency;
 
-	float InitialIntensity;			// 初始光源强度
-	float PhotoelectricityRatio;	// 光源强度与电池容量比, 用于同步电量与光源强度的衰减量
-	float Latency;					// 旋转延时
+	// 当前电量
+	float CurrentQuantity;
+	// 初始光源强度
+	float InitialIntensity;
+	// 光源强度与电池容量比, 用于同步电量与光源强度的衰减量
+	float PhotoelectricityRatio;
+	// 旋转延时
+	float Latency;					
 	FRotator TargetRotation;
 	FRotator SelfRotation;
 };

@@ -1,18 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Component/FlashLight/FlashLightComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
-#define UE_DEFAULT_FLASH_LIGHT_QUANTITY 100.f	// 电池电量
-#define UE_DEFAULT_FLASH_LIGHT_LATENCY 0.15f	// 计时器持续时间
 UFlashLightComponent::UFlashLightComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-
+	
 	SetVisibility(false);
-	Quantity = UE_DEFAULT_FLASH_LIGHT_QUANTITY;
+	CurrentQuantity = DefaultFlashLightQuantity;
 	Latency = -1.f;
 	// 设定强度单位为流明
 	SetIntensityUnits(ELightUnits::Lumens);
@@ -30,7 +25,7 @@ void UFlashLightComponent::TickComponent(float DeltaTime, enum ELevelTick TickTy
 	
 	UpdateLookAt(DeltaTime);
 	
-	if ((bool)Quantity && GetVisibleFlag())
+	if ((bool)CurrentQuantity && GetVisibleFlag())
 	{
 		SetIntensity(Intensity - DeltaTime * PhotoelectricityRatio);
 	}
@@ -43,14 +38,14 @@ void UFlashLightComponent::ToggleState()
 
 void UFlashLightComponent::Reset()
 {
-	Quantity = UE_DEFAULT_FLASH_LIGHT_QUANTITY;
+	CurrentQuantity = DefaultFlashLightQuantity;
 	SetIntensity(InitialIntensity);
 }
 
 void UFlashLightComponent::SetFlashLightParams(float InIntensity, float InInnerConeAngle, float InOuterConeAngle,
                                                float InAttenuationRadius, float InSourceRadius)
 {
-	PhotoelectricityRatio = InIntensity / UE_DEFAULT_FLASH_LIGHT_QUANTITY;
+	PhotoelectricityRatio = InIntensity / DefaultFlashLightQuantity;
 	InitialIntensity = InIntensity;
 	SetIntensity(InIntensity);
 	SetInnerConeAngle(InInnerConeAngle);
@@ -68,11 +63,11 @@ void UFlashLightComponent::UpdateLookAt(float DeltaTime)
 		{
 			TargetRotation = Camera->GetComponentRotation();
 			SelfRotation = GetComponentRotation();
-			Latency = UE_DEFAULT_FLASH_LIGHT_LATENCY;
+			Latency = DefaultLatency;
 		}
 
 		// 线性插值计算目前阶段的旋转
-		float Alpha = Latency / UE_DEFAULT_FLASH_LIGHT_LATENCY;
+		float Alpha = Latency / DefaultLatency;
 		// bShortestPath必须为true
 		FRotator Rotation = UKismetMathLibrary::RLerp(TargetRotation, SelfRotation, Alpha, true);
 		SetWorldRotation(Rotation);
@@ -84,6 +79,6 @@ void UFlashLightComponent::UpdateLookAt(float DeltaTime)
 void UFlashLightComponent::PowerDecay(float DeltaTime)
 {
 	// bVisible控制手电是否耗电
-	Quantity = 0 < Quantity ? Quantity - DeltaTime * GetVisibleFlag() : 0;
+	CurrentQuantity = 0 < CurrentQuantity ? CurrentQuantity - DeltaTime * GetVisibleFlag() : 0;
 }
 
