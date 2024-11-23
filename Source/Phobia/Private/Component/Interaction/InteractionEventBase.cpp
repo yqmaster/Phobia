@@ -14,7 +14,7 @@ void UInteractionEventBase::DeActiveEvent(const AActor* OwnerActor, UInteraction
 	EventDeActive(OwnerActor, OwnerComponent);
 }
 
-void UInteractionEventBase::TriggerEventStart(AActor* TakerActor)
+void UInteractionEventBase::TriggerEventStart(AActor* TakerActor) const
 {
 	if (AbilityInfo)
 	{
@@ -22,7 +22,7 @@ void UInteractionEventBase::TriggerEventStart(AActor* TakerActor)
 	}
 }
 
-void UInteractionEventBase::TriggerEventEnd(AActor* TakerActor)
+void UInteractionEventBase::TriggerEventEnd(AActor* TakerActor) const
 {
 	if (AbilityInfo)
 	{

@@ -11,19 +11,3 @@ void UInteractionOperatorBase::EndDoOperator(AActor* TakerActor, AActor* OwnerAc
 	ReceiveDoOperatorEnd(TakerActor, OwnerActor, OwnerComponent);
 	DoOperatorEnd(TakerActor, OwnerActor, OwnerComponent);
 }
-
-void UInteractionOperatorBase::DoOperatorBegin(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
-{
-}
-
-void UInteractionOperatorBase::DoOperatorEnd(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
-{
-}
-
-void UInteractionOperatorBase::ReceiveDoOperatorBegin_Implementation(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
-{
-}
-
-void UInteractionOperatorBase::ReceiveDoOperatorEnd_Implementation(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
-{
-}

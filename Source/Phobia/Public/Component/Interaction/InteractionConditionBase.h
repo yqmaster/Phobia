@@ -13,6 +13,7 @@ class PHOBIA_API UInteractionConditionBase : public UInteractionConfigBase
 	GENERATED_BODY()
 
 public:
+	// 外界调用: 条件检查
 	bool CheckCondition(AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
 
 protected:
@@ -20,10 +21,10 @@ protected:
 	 * 条件检查
 	 */
 
-	// C++ 实现当事件激活
+	// C++ 内部实现: 当进行条件检查
 	virtual bool ConditionCheck(AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
 
-	// 蓝图 实现当事件激活
-	UFUNCTION(BlueprintNativeEvent, meta = (DisplayName = "Condition Check"))
+	// 蓝图 内部实现: 当进行条件检查
+	UFUNCTION(BlueprintNativeEvent, meta = (DisplayName = "Condition Check", ForceAsFunction))
 	bool CallConditionCheck(AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
 };

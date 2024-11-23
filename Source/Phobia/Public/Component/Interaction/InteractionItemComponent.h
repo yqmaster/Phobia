@@ -4,6 +4,7 @@
 #include "Components/ActorComponent.h"
 #include "InteractionItemComponent.generated.h"
 
+enum class EInteractionRoleType : uint8;
 class UInteractionAbilityInfo;
 class UInteractionAbilityDataAsset;
 
