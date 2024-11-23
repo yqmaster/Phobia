@@ -16,10 +16,10 @@ public:
 	UInteractionPlayerComponent();
 
 	UFUNCTION(BlueprintCallable)
-	void SetCurrentInteractionItem(UInteractionItemComponent* InInteractionItem);
+	void SetCurrentInteractionItem(const EInteractionRoleType InRoleType, UInteractionItemComponent* InInteractionItem);
 
 	UFUNCTION(BlueprintCallable)
-	void ClearCurrentInteractionItem();
+	void ClearCurrentInteractionItem(const EInteractionRoleType InRoleType);
 
 	UFUNCTION(BlueprintCallable)
 	void TriggerInteractionByClick(const EInteractionRoleType RoleType) const;
@@ -27,13 +27,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TriggerInteractionByPress(const EInteractionRoleType RoleType, const bool IsStart);
 
-protected:
-	virtual void BeginPlay() override;
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 private:
 	UPROPERTY(Transient)
-	TObjectPtr<UInteractionItemComponent> CurrentInteractionItem = nullptr;
+	TMap<EInteractionRoleType, TObjectPtr<UInteractionItemComponent>> InteractionItemMap;
 
 	UPROPERTY(Transient)
 	TMap<EInteractionRoleType, TObjectPtr<UInteractionItemComponent>> InteractionCachedItemMap;

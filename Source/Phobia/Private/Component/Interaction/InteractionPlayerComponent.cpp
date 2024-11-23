@@ -9,37 +9,26 @@ UInteractionPlayerComponent::UInteractionPlayerComponent()
 	// ...
 }
 
-void UInteractionPlayerComponent::SetCurrentInteractionItem(UInteractionItemComponent* InInteractionItem)
+void UInteractionPlayerComponent::SetCurrentInteractionItem(const EInteractionRoleType InRoleType, UInteractionItemComponent* InInteractionItem)
 {
 	ensureAlwaysMsgf(IsValid(InInteractionItem), TEXT("SetCurrentInteractionItem for [%s] in [%s] is invalid"), *GetName(), *GetOwner()->GetName());
-	CurrentInteractionItem = InInteractionItem;
+	InteractionItemMap.Add(InRoleType, InInteractionItem);
 }
 
-void UInteractionPlayerComponent::ClearCurrentInteractionItem()
+void UInteractionPlayerComponent::ClearCurrentInteractionItem(const EInteractionRoleType InRoleType)
 {
-	CurrentInteractionItem = nullptr;
-}
-
-// Called when the game starts
-void UInteractionPlayerComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-}
-
-void UInteractionPlayerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+	ensureAlwaysMsgf(InteractionItemMap.Find(InRoleType), TEXT("ClearCurrentInteractionItem for [%s] in [%s] is invalid"), *GetName(), *GetOwner()->GetName());
+	InteractionItemMap.Remove(InRoleType);
 }
 
 void UInteractionPlayerComponent::TriggerInteractionByClick(const EInteractionRoleType RoleType) const
 {
-	if (IsValid(CurrentInteractionItem))
+	if (const TObjectPtr<UInteractionItemComponent>* InteractionItemPtr = InteractionItemMap.Find(RoleType))
 	{
-		CurrentInteractionItem->TakeInteractionByClick(GetOwner(), RoleType);
+		if (const TObjectPtr<UInteractionItemComponent> InteractionItem = *InteractionItemPtr)
+		{
+			InteractionItem->TakeInteractionByClick(GetOwner(), RoleType);
+		}
 	}
 }
 
@@ -47,30 +36,24 @@ void UInteractionPlayerComponent::TriggerInteractionByPress(const EInteractionRo
 {
 	if (IsStart)
 	{
-		if (IsValid(CurrentInteractionItem))
+		if (const TObjectPtr<UInteractionItemComponent>* InteractionItemPtr = InteractionItemMap.Find(RoleType))
 		{
-			InteractionCachedItemMap.Add(RoleType, CurrentInteractionItem);
-			CurrentInteractionItem->TakeInteractionByPress(GetOwner(), RoleType, IsStart);
-		}
-		else
-		{
-			ensureAlwaysMsgf(false, TEXT("TriggerInteractionByPress on Start for [%s] in [%s] is invalid"), *GetName(), *GetOwner()->GetName());
+			if (const TObjectPtr<UInteractionItemComponent> InteractionItem = *InteractionItemPtr)
+			{
+				InteractionCachedItemMap.Add(RoleType, InteractionItem);
+				InteractionItem->TakeInteractionByPress(GetOwner(), RoleType, IsStart);
+			}
 		}
 	}
 	else
 	{
-		if (const TObjectPtr<UInteractionItemComponent> CachedItem = *InteractionCachedItemMap.Find(RoleType))
+		if (const TObjectPtr<UInteractionItemComponent>* InteractionItemPtr = InteractionCachedItemMap.Find(RoleType))
 		{
-			InteractionCachedItemMap.Remove(RoleType);
-
-			if (IsValid(CachedItem))
+			if (const TObjectPtr<UInteractionItemComponent> InteractionItem = *InteractionItemPtr)
 			{
-				CachedItem->TakeInteractionByPress(GetOwner(), RoleType, IsStart);
+				InteractionCachedItemMap.Remove(RoleType);
+				InteractionItem->TakeInteractionByPress(GetOwner(), RoleType, IsStart);
 			}
-		}
-		else
-		{
-			ensureAlwaysMsgf(false, TEXT("TriggerInteractionByPress on End for [%s] in [%s] is invalid"), *GetName(), *GetOwner()->GetName());
 		}
 	}
 }

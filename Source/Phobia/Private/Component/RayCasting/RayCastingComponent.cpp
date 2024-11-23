@@ -4,18 +4,19 @@
 
 /**
  * 捕获后处理
+ * @param InOwner 检测发起者
  * @param HitActor 捕获对象
  * @param bDetected 是否被检测
  */
-void PostCast(const AActor* HitActor, bool bDetected)
+void PostCast(AActor* InOwner, const AActor* HitActor, bool bDetected)
 {
 	TArray<UActorComponent*> ActorComponents;
 	HitActor->GetComponents(UActorComponent::StaticClass(), ActorComponents);
 	for (UActorComponent* ActorComponent : ActorComponents)
 	{
-		if (IDetectedItemInterface* ItemInterface = Cast<IDetectedItemInterface>(ActorComponent))
+		if (ActorComponent->Implements<UDetectedItemInterface>())
 		{
-			ItemInterface->OnDetected(bDetected);
+			IDetectedItemInterface::Execute_OnDetected(ActorComponent, InOwner, bDetected);
 		}
 	}
 }
@@ -23,10 +24,9 @@ void PostCast(const AActor* HitActor, bool bDetected)
 URayCastingComponent::URayCastingComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-	
+
 	CollisionQueryParams.AddIgnoredActor(GetOwner());
 }
-
 
 // Called when the game starts
 void URayCastingComponent::BeginPlay()
@@ -42,6 +42,7 @@ void URayCastingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 void URayCastingComponent::CastActor()
 {
+	AActor* Owner = GetOwner();
 	// 定义射线
 	FVector StartLocation = GetOwner()->GetActorLocation();
 	FVector EndLocation = StartLocation + GetOwner()->GetActorForwardVector() * RayCastingDistance;
@@ -51,24 +52,22 @@ void URayCastingComponent::CastActor()
 
 	if (AActor* HitActor = HitResult.GetActor())
 	{
-		
 		if (HitActor == BeCastActor)
 		{
 			return;
 		}
-		
+
 		if (BeCastActor)
 		{
-			PostCast(BeCastActor, false);
+			PostCast(Owner, BeCastActor, false);
 		}
 
-		PostCast(HitActor, true);
+		PostCast(Owner, HitActor, true);
 		BeCastActor = HitActor;
 	}
 	else if (BeCastActor)
 	{
-		PostCast(BeCastActor, false);
+		PostCast(Owner, BeCastActor, false);
 		BeCastActor = nullptr;
 	}
 }
-

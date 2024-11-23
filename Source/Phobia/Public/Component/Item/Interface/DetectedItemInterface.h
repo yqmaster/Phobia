@@ -1,12 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "DetectedItemInterface.generated.h"
 
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, Blueprintable)
 class UDetectedItemInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -15,14 +13,17 @@ class UDetectedItemInterface : public UInterface
 /**
  * 被检测物体执行接口
  */
-class PHOBIA_API IDetectedItemInterface
+class IDetectedItemInterface
 {
 	GENERATED_BODY()
 
 public:
 	/**
 	 * 被检测执行
+	 * @param InTaker 检测发起者
 	 * @param bDetected 是否被检测
 	 */
-	virtual void OnDetected(bool bDetected) = 0;
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, meta = (DisplayName = "On Detected", ForceAsFunction))
+	void OnDetected(AActor* InTaker, bool bDetected);
+	virtual void OnDetected_Implementation(AActor* InTaker, bool bDetected) {}
 };

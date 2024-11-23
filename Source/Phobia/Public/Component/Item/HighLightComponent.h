@@ -10,14 +10,14 @@ class PHOBIA_API UHighLightComponent : public UActorComponent, public IDetectedI
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	UHighLightComponent();
 
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	virtual void OnDetected(bool bHighLight) override;
+	virtual void OnDetected_Implementation(AActor* InOwner, bool bHighLight) override;
 };
