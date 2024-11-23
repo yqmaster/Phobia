@@ -16,29 +16,27 @@ class PHOBIA_API UPawnMoveControllerComponent : public UControllerComponentBase
 {
 	GENERATED_BODY()
 
-public:
-	UPawnMoveControllerComponent();
-
 protected:
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	virtual void OnPossessedPawnChange(APawn* OldPawn, APawn* NewPawn) override;
+	virtual void OnSetupInputComponent(UEnhancedInputComponent* InInputComponent) override;
+	virtual void OnPossessed(APCharacterBase* InCharacter) override;
+	virtual void OnUnPossessed() override;
 
-	void Move(const FInputActionValue& Value);
-	void StartRush(const FInputActionValue& Value);
-	void EndRush(const FInputActionValue& Value);
+	void Move(const FInputActionValue& InValue);
+	void StartRush(const FInputActionValue& InValue);
+	void EndRush(const FInputActionValue& InValue);
 
 private:
-	void CachePawnMoveComponent(const AActor* InActor);
+	void CachePawnMoveComponent();
+	void UnCachePawnMoveComponent();
 
 protected:
-	UPROPERTY(BlueprintReadOnly, Transient)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* MoveAction = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* RushAction = nullptr;
+
+private:
+	UPROPERTY(BlueprintReadOnly, Transient, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPawnMoveComponent> PawnMoveComponent = nullptr;
-
-private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* MoveAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* RushAction;
 };

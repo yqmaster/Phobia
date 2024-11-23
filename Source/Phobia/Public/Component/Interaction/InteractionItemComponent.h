@@ -27,10 +27,10 @@ protected:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void TakeInteractionByClick(AActor* Taker, EInteractionRoleType RoleType) const;
+	void TakeInteractionByClick(AActor* Taker, const EInteractionRoleType RoleType) const;
 
 	UFUNCTION(BlueprintCallable)
-	void TakeInteractionByPress(AActor* Taker, EInteractionRoleType RoleType, bool IsStart) const;
+	void TakeInteractionByPress(AActor* Taker, const EInteractionRoleType RoleType, const bool IsStart) const;
 
 public:
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)

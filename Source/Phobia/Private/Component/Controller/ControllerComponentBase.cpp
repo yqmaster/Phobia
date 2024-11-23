@@ -1,39 +1,66 @@
 #include "Component/Controller/ControllerComponentBase.h"
 #include "3C/Controller/PPlayerController.h"
 
-UControllerComponentBase::UControllerComponentBase()
+void UControllerComponentBase::SetupInputComponent(UEnhancedInputComponent* InInputComponent)
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	CachedInputComponent = InInputComponent;
+	ensureAlwaysMsgf(CachedInputComponent, TEXT("SetupInputComponent for [%s] at [%s] failed, InputComponent is nullptr"), *GetName(), *GetOwner()->GetName());
+	if (CachedInputComponent)
+	{
+		OnSetupInputComponent(CachedInputComponent);
+		ReceiveOnSetupInputComponent(CachedInputComponent);
+	}
 }
 
-void UControllerComponentBase::BeginPlay()
+void UControllerComponentBase::PossessCharacter(APlayerController* InPlayerController, APCharacterBase* InCharacter)
 {
-	Super::BeginPlay();
+	CachedPlayerCharacter = InCharacter;
+	CachedPlayerController = Cast<APPlayerController>(InPlayerController);
 
-	APPlayerController* Controller = Cast<APPlayerController>(GetOwner());
-	if (!Controller)
+	OnPossessed(InCharacter);
+	ReceiveOnPossessed(InCharacter);
+}
+
+void UControllerComponentBase::UnPossessCharacter()
+{
+	ReceiveOnUnPossessed();
+	OnUnPossessed();
+
+	CachedPlayerController = nullptr;
+	CachedPlayerCharacter = nullptr;
+	CachedInputComponent = nullptr;
+}
+
+UEnhancedInputComponent* UControllerComponentBase::GetInputComponent() const
+{
+	if (CachedInputComponent)
 	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] is a PPlayerController's Component, [%s] is not PPlayerController"), *GetName(), *GetOwner()->GetName());
-		return;
+		return CachedInputComponent;
 	}
 
-	PlayerController = Controller;
-	PlayerController->OnPossessedPawnChanged.AddDynamic(this, &UControllerComponentBase::OnPossessedPawnChange);
+	ensureAlwaysMsgf(false, TEXT("GetInputComponent for [%s] at [%s] failed, InputComponent is nullptr"), *GetName(), *GetOwner()->GetName());
+	const APPlayerController* Controller = GetPlayerController();
+	return Controller ? Controller->GetEnhancedInputComponent() : nullptr;
 }
 
-void UControllerComponentBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
+APPlayerController* UControllerComponentBase::GetPlayerController() const
 {
-	if (PlayerController)
+	if (CachedPlayerController)
 	{
-		PlayerController->OnPossessedPawnChanged.RemoveDynamic(this, &UControllerComponentBase::OnPossessedPawnChange);
+		return CachedPlayerController;
 	}
 
-	PlayerController = nullptr;
-
-	Super::EndPlay(EndPlayReason);
+	ensureAlwaysMsgf(false, TEXT("GetPlayerController for [%s] at [%s] failed, PlayerController is nullptr"), *GetName(), *GetOwner()->GetName());
+	return Cast<APPlayerController>(GetOwner());
 }
 
-void UControllerComponentBase::OnPossessedPawnChange(APawn* OldPawn, APawn* NewPawn)
+APCharacterBase* UControllerComponentBase::GetControlledCharacter() const
 {
+	if (const APPlayerController* PC = GetPlayerController())
+	{
+		return PC->GetControlledCharacter();
+	}
 
+	ensureAlwaysMsgf(false, TEXT("GetControlledCharacter for [%s] at [%s] failed, PlayerController is nullptr"), *GetName(), *GetOwner()->GetName());
+	return nullptr;
 }

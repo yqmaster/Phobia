@@ -2,52 +2,46 @@
 
 #include "EnhancedInputComponent.h"
 #include "3C/Controller/PPlayerController.h"
+#include "Character/PCharacterBase.h"
 #include "Component/Character/PawnMoveComponent.h"
 
-UPawnMoveControllerComponent::UPawnMoveControllerComponent()
+void UPawnMoveControllerComponent::OnSetupInputComponent(UEnhancedInputComponent* InInputComponent)
 {
-	PrimaryComponentTick.bCanEverTick = false;
-}
+	Super::OnSetupInputComponent(InInputComponent);
 
-void UPawnMoveControllerComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
+	if (InInputComponent)
 	{
 		// 移动
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &UPawnMoveControllerComponent::Move);
+		InInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &UPawnMoveControllerComponent::Move);
 		// 冲刺
-		EnhancedInputComponent->BindAction(RushAction, ETriggerEvent::Started, this, &UPawnMoveControllerComponent::StartRush);
-		EnhancedInputComponent->BindAction(RushAction, ETriggerEvent::Completed, this, &UPawnMoveControllerComponent::EndRush);
+		InInputComponent->BindAction(RushAction, ETriggerEvent::Started, this, &UPawnMoveControllerComponent::StartRush);
+		InInputComponent->BindAction(RushAction, ETriggerEvent::Completed, this, &UPawnMoveControllerComponent::EndRush);
 	}
-
-	CachePawnMoveComponent(PlayerController->GetControlledCharacter());
 }
 
-void UPawnMoveControllerComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void UPawnMoveControllerComponent::OnPossessed(APCharacterBase* InCharacter)
 {
-	// TODO UnbindAction
+	Super::OnPossessed(InCharacter);
 
-	Super::EndPlay(EndPlayReason);
+	CachePawnMoveComponent();
 }
 
-void UPawnMoveControllerComponent::OnPossessedPawnChange(APawn* OldPawn, APawn* NewPawn)
+void UPawnMoveControllerComponent::OnUnPossessed()
 {
-	Super::OnPossessedPawnChange(OldPawn, NewPawn);
+	UnCachePawnMoveComponent();
 
-	CachePawnMoveComponent(NewPawn);
+	Super::OnUnPossessed();
 }
 
-void UPawnMoveControllerComponent::Move(const FInputActionValue& Value)
+void UPawnMoveControllerComponent::Move(const FInputActionValue& InValue)
 {
 	if (PawnMoveComponent)
 	{
-		PawnMoveComponent->Move(Value.Get<FVector2D>());
+		PawnMoveComponent->Move(InValue.Get<FVector2D>());
 	}
 }
 
-void UPawnMoveControllerComponent::StartRush(const FInputActionValue& Value)
+void UPawnMoveControllerComponent::StartRush(const FInputActionValue& InValue)
 {
 	if (PawnMoveComponent)
 	{
@@ -55,7 +49,7 @@ void UPawnMoveControllerComponent::StartRush(const FInputActionValue& Value)
 	}
 }
 
-void UPawnMoveControllerComponent::EndRush(const FInputActionValue& Value)
+void UPawnMoveControllerComponent::EndRush(const FInputActionValue& InValue)
 {
 	if (PawnMoveComponent)
 	{
@@ -63,17 +57,25 @@ void UPawnMoveControllerComponent::EndRush(const FInputActionValue& Value)
 	}
 }
 
-void UPawnMoveControllerComponent::CachePawnMoveComponent(const AActor* InActor)
+void UPawnMoveControllerComponent::CachePawnMoveComponent()
 {
-	if (InActor)
+	if (const APPlayerController* PC = GetPlayerController())
 	{
-		UPawnMoveComponent* Component = InActor->GetComponentByClass<UPawnMoveComponent>();
-		if (!Component)
+		if (const APCharacterBase* Character = PC->GetControlledCharacter())
 		{
-			UE_LOG(LogTemp, Error, TEXT("[%s] init failed, [%s] does not have UPawnMoveComponent"), *GetName(), *InActor->GetName());
-			return;
-		}
+			UPawnMoveComponent* Component = Character->GetComponentByClass<UPawnMoveComponent>();
+			if (!Component)
+			{
+				UE_LOG(LogTemp, Error, TEXT("[%s] init failed, [%s] does not have UPawnMoveComponent"), *GetName(), *Character->GetName());
+				return;
+			}
 
-		PawnMoveComponent = Component;
+			PawnMoveComponent = Component;
+		}
 	}
+}
+
+void UPawnMoveControllerComponent::UnCachePawnMoveComponent()
+{
+	PawnMoveComponent = nullptr;
 }

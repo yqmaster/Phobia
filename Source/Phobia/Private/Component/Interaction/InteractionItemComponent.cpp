@@ -14,30 +14,26 @@ void UInteractionItemComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	AActor* OwnerActor = GetOwner();
+
+	ensureAlwaysMsgf(AbilityInfos.IsEmpty(), TEXT("[%s] in [%s] AbilityInfos is not empty when BeginPlay"), *GetName(), *OwnerActor->GetName());
+	AbilityInfos.Empty();
 	if (InteractionAbilityAsset)
 	{
 		for (UInteractionAbilityInfo* AbilityInfo : InteractionAbilityAsset->GetAllAbilityInfos())
 		{
-			AbilityInfos.Add(AbilityInfo);
+			ensureAlwaysMsgf(AbilityInfo, TEXT("[%s] passing a nullptr AbilityInfo from GetAllAbilityInfos in [%s]"), *InteractionAbilityAsset->GetName(), *OwnerActor->GetName());
+			if (AbilityInfo)
+			{
+				AbilityInfo->InitAbilityInfo(OwnerActor, this);
+				AbilityInfos.Add(AbilityInfo);
+			}
 		}
 	}
 
-	AActor* OwnerActor = GetOwner();
-
-	for (UInteractionAbilityInfo* AbilityInfo : AbilityInfos)
+	for (const UInteractionAbilityInfo* AbilityInfo : AbilityInfos)
 	{
-		if (AbilityInfo)
-		{
-			AbilityInfo->InitAbilityInfo(OwnerActor, this);
-		}
-	}
-
-	for (UInteractionAbilityInfo* AbilityInfo : AbilityInfos)
-	{
-		if (AbilityInfo)
-		{
-			AbilityInfo->ActiveAbilityInfo();
-		}
+		AbilityInfo->ActiveAbilityInfo();
 	}
 }
 
@@ -47,18 +43,9 @@ void UInteractionItemComponent::EndPlay(const EEndPlayReason::Type EndPlayReason
 
 	for (UInteractionAbilityInfo* AbilityInfo : AbilityInfos)
 	{
-		if (AbilityInfo)
-		{
-			AbilityInfo->DeActiveAbilityInfo();
-		}
-	}
-
-	for (UInteractionAbilityInfo* AbilityInfo : AbilityInfos)
-	{
-		if (AbilityInfo)
-		{
-			AbilityInfo->UnInitAbilityInfo(OwnerActor, this);
-		}
+		ensureAlwaysMsgf(AbilityInfo, TEXT("[%s] has invalid AbilityInfo when EndPlay in [%s]"), *GetName(), *OwnerActor->GetName());
+		AbilityInfo->DeActiveAbilityInfo();
+		AbilityInfo->UnInitAbilityInfo(OwnerActor, this);
 	}
 
 	Super::EndPlay(EndPlayReason);
@@ -71,12 +58,12 @@ void UInteractionItemComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	// ...
 }
 
-void UInteractionItemComponent::TakeInteractionByClick(AActor* Taker, EInteractionRoleType RoleType) const
+void UInteractionItemComponent::TakeInteractionByClick(AActor* Taker, const EInteractionRoleType RoleType) const
 {
 	OnInteractByClick.Broadcast(Taker, RoleType);
 }
 
-void UInteractionItemComponent::TakeInteractionByPress(AActor* Taker, EInteractionRoleType RoleType, bool IsStart) const
+void UInteractionItemComponent::TakeInteractionByPress(AActor* Taker, const EInteractionRoleType RoleType, const bool IsStart) const
 {
 	OnInteractByPress.Broadcast(Taker, RoleType, IsStart);
 }

@@ -2,9 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "Character/PCharacterBase.h"
 #include "PPlayerController.generated.h"
 
+class APCharacterBase;
 class UEnhancedInputComponent;
 
 /**
@@ -18,6 +18,9 @@ class PHOBIA_API APPlayerController : public APlayerController
 public:
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
+
+protected:
+	virtual void SetupInputComponent() override;
 
 public:
 	UFUNCTION(BlueprintCallable)

@@ -30,10 +30,10 @@ protected:
 	virtual void DoOperatorEnd(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent) {}
 
 	// 蓝图 内部实现: 开始执行操作
-	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "Do Operator Begin"))
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "Do Operator Begin", ForceAsFunction))
 	void ReceiveDoOperatorBegin(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
 
 	// 蓝图 内部实现: 结束执行操作
-	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "Do Operator End"))
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "Do Operator End", ForceAsFunction))
 	void ReceiveDoOperatorEnd(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
 };

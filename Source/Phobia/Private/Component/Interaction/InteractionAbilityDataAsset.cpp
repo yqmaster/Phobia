@@ -25,12 +25,12 @@ TArray<UInteractionAbilityInfo*> UInteractionAbilityDataAsset::GetAllAbilityInfo
 
 void UInteractionAbilityDataAsset::GetPickAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos) const
 {
-	if (bCanBePick)
+	if (bCanBePick && PickOperators.Num() > 0)
 	{
 		// 触发类型: 点击, 作用类型: 拾取
 		UInteractionEvent_TriggerByInput* Event = UInteractionEvent_TriggerByInput::CreateTriggerByInputEvent(EInteractionEventType::Click, EInteractionRoleType::Pick);
 		// TODO 这里拾取应该需要额外的条件检查，例如手上是否拿满了
-		TArray<TObjectPtr<UInteractionConditionBase>> PickConditions;
+		TArray<UInteractionConditionBase*> PickConditions;
 
 		AbilityInfos.Add(UInteractionAbilityInfo::CreateAbilityInfo(Event, PickConditions, PickOperators));
 	}
@@ -42,9 +42,9 @@ void UInteractionAbilityDataAsset::GetDropAbilityInfo(TArray<UInteractionAbility
 	{
 		// 触发类型: 点击, 作用类型: 丢弃
 		UInteractionEvent_TriggerByInput* Event = UInteractionEvent_TriggerByInput::CreateTriggerByInputEvent(EInteractionEventType::Click, EInteractionRoleType::Drop);
-		TArray<TObjectPtr<UInteractionConditionBase>> DropConditions;
+		TArray<UInteractionConditionBase*> DropConditions;
 		// TODO 这里丢弃应该是要根据枚举创建不同的丢弃 Operator
-		TArray<TObjectPtr<UInteractionOperatorBase>> DropOperators;
+		TArray<UInteractionOperatorBase*> DropOperators;
 
 		AbilityInfos.Add(UInteractionAbilityInfo::CreateAbilityInfo(Event, DropConditions, DropOperators));
 	}
@@ -52,7 +52,7 @@ void UInteractionAbilityDataAsset::GetDropAbilityInfo(TArray<UInteractionAbility
 
 void UInteractionAbilityDataAsset::GetPutAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos) const
 {
-	if (bCanBePick && bCanBePut)
+	if (bCanBePick && bCanBePut && PutOperators.Num() > 0)
 	{
 		// 触发类型: 长按, 作用类型: 放置
 		UInteractionEvent_TriggerByInput* Event = UInteractionEvent_TriggerByInput::CreateTriggerByInputEvent(EInteractionEventType::Press, EInteractionRoleType::Put);
@@ -63,12 +63,12 @@ void UInteractionAbilityDataAsset::GetPutAbilityInfo(TArray<UInteractionAbilityI
 
 void UInteractionAbilityDataAsset::GetClickAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos) const
 {
-	if (bCanBeClick)
+	if (bCanBeClick && ClickOperators.Num() > 0)
 	{
 		for (const EInteractionEffectPlaceType PlaceType : ClickEffectPlaceTypes)
 		{
 			// 触发类型: 点击, 作用类型: 根据情况选择
-			const UInteractionEvent_TriggerByInput* Event = UInteractionEvent_TriggerByInput::CreateTriggerByInputEvent(EInteractionEventType::Click, GetRoleTypeByEffectPlaceType(PlaceType));
+			UInteractionEvent_TriggerByInput* Event = UInteractionEvent_TriggerByInput::CreateTriggerByInputEvent(EInteractionEventType::Click, GetRoleTypeByEffectPlaceType(PlaceType));
 
 			AbilityInfos.Add(UInteractionAbilityInfo::CreateAbilityInfoWithCopy(Event, ClickConditions, ClickOperators));
 		}
@@ -77,12 +77,12 @@ void UInteractionAbilityDataAsset::GetClickAbilityInfo(TArray<UInteractionAbilit
 
 void UInteractionAbilityDataAsset::GetPressAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos) const
 {
-	if (bCanBePress)
+	if (bCanBePress && PressOperators.Num() > 0)
 	{
 		for (const EInteractionEffectPlaceType PlaceType : PressEffectPlaceTypes)
 		{
 			// 触发类型: 点击, 作用类型: 根据情况选择
-			const UInteractionEvent_TriggerByInput* Event = UInteractionEvent_TriggerByInput::CreateTriggerByInputEvent(EInteractionEventType::Press, GetRoleTypeByEffectPlaceType(PlaceType));
+			UInteractionEvent_TriggerByInput* Event = UInteractionEvent_TriggerByInput::CreateTriggerByInputEvent(EInteractionEventType::Press, GetRoleTypeByEffectPlaceType(PlaceType));
 
 			AbilityInfos.Add(UInteractionAbilityInfo::CreateAbilityInfoWithCopy(Event, PressConditions, PressOperators));
 		}
