@@ -5,10 +5,9 @@
 #include "Component/Interaction/InteractionTypeDefine.h"
 #include "InteractionAbilityDataAsset.generated.h"
 
-class UInteractionEvent_TriggerByInput;
 class UInteractionEventBase;
-class UInteractionOperatorBase;
 class UInteractionConditionBase;
+class UInteractionOperatorBase;
 class UInteractionAbilityInfo;
 
 // 可交互物品的可生效位置
@@ -37,23 +36,24 @@ class PHOBIA_API UInteractionAbilityDataAsset : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
+	// 外界调用，获取所有的 AbilityInfo
 	UFUNCTION(BlueprintCallable)
-	TArray<UInteractionAbilityInfo*> GetAllAbilityInfos();
+	TArray<UInteractionAbilityInfo*> GetAllAbilityInfos() const;
 
 private:
-	void GetPickAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos);
-	void GetDropAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos);
-	void GetPutAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos);
-	void GetClickAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos);
-	void GetPressAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos);
+	// 收集拾取相关的信息
+	void GetPickAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
+	// 收集丢弃相关的信息
+	void GetDropAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
+	// 收集放置相关的信息
+	void GetPutAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
+	// 收集点击相关的信息
+	void GetClickAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
+	// 收集长按相关的信息-·	
+	void GetPressAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
 
-	UInteractionAbilityInfo* CreateAbilityInfo(UInteractionEventBase* InEvent, const TArray<TObjectPtr<UInteractionConditionBase>>& InConditions, const TArray<TObjectPtr<UInteractionOperatorBase>>& InOperators);
-	UInteractionAbilityInfo* CreateAbilityInfoWithCopy(const UInteractionEventBase* InEvent, const TArray<TObjectPtr<UInteractionConditionBase>>& InConditions, const TArray<TObjectPtr<UInteractionOperatorBase>>& InOperators);
-	static UInteractionEvent_TriggerByInput* CreateTriggerByInputEvent(EInteractionEventType InTriggerType, EInteractionRoleType InRoleType);
+	// 根据 EffectPlaceType 获取 RoleType
 	static EInteractionRoleType GetRoleTypeByEffectPlaceType(EInteractionEffectPlaceType InEffectPlaceType);
-
-	template <typename InObjectType>
-	TArray<TObjectPtr<InObjectType>> DuplicateArray(const TArray<TObjectPtr<InObjectType>>& InArray);
 
 protected:
 	// 拾取/丢弃/放置
@@ -70,6 +70,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "丢弃的方式", EditCondition = "bCanBePick", EditConditionHides))
 	EDropType DropType = EDropType::None;
 
+	// 是否能被放置
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "是否能被放置", EditCondition = "bCanBePick", EditConditionHides))
 	bool bCanBePut = false;
 
@@ -117,14 +118,3 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "长按可作用的地方", EditCondition = "bCanBePress", EditConditionHides))
 	TArray<EInteractionEffectPlaceType> PressEffectPlaceTypes;
 };
-
-template <typename InObjectType>
-TArray<TObjectPtr<InObjectType>> UInteractionAbilityDataAsset::DuplicateArray(const TArray<TObjectPtr<InObjectType>>& InArray)
-{
-	TArray<TObjectPtr<InObjectType>> NewArray;
-	for (const InObjectType* OldObj : InArray)
-	{
-		NewArray.Add(DuplicateObject<InObjectType>(OldObj, this));
-	}
-	return NewArray;
-}

@@ -13,6 +13,9 @@ class PHOBIA_API UInteractionEvent_TriggerByInput : public UInteractionEventBase
 {
 	GENERATED_BODY()
 
+public:
+	static UInteractionEvent_TriggerByInput* CreateTriggerByInputEvent(EInteractionEventType InTriggerType, EInteractionRoleType InRoleType);
+
 protected:
 	virtual void EventActive(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent) override;
 
@@ -25,7 +28,7 @@ private:
 	UFUNCTION()
 	void OnInteractionByPress(AActor* TakerActor, EInteractionRoleType InRoleType, bool IsStart);
 
-public:
+protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "输入触发类型"))
 	EInteractionEventType TriggerType = EInteractionEventType::None;
 

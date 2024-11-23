@@ -4,6 +4,24 @@
 #include "Component/Interaction/InteractionEventBase.h"
 #include "Component/Interaction/InteractionOperatorBase.h"
 
+UInteractionAbilityInfo* UInteractionAbilityInfo::CreateAbilityInfo(UInteractionEventBase* InEvent, const TArray<UInteractionConditionBase*>& InConditions, const TArray<UInteractionOperatorBase*>& InOperators)
+{
+	UInteractionAbilityInfo* AbilityInfo = NewObject<UInteractionAbilityInfo>();
+	AbilityInfo->Event = InEvent;
+	AbilityInfo->Conditions = InConditions;
+	AbilityInfo->Operators = InOperators;
+	return AbilityInfo;
+}
+
+UInteractionAbilityInfo* UInteractionAbilityInfo::CreateAbilityInfoWithCopy(const UInteractionEventBase* InEvent, const TArray<UInteractionConditionBase*>& InConditions, const TArray<UInteractionOperatorBase*>& InOperators)
+{
+	UInteractionAbilityInfo* AbilityInfo = NewObject<UInteractionAbilityInfo>();
+	AbilityInfo->Event = DuplicateObject<UInteractionEventBase>(InEvent, nullptr);
+	AbilityInfo->Conditions = DuplicateTObjectArray(InConditions);
+	AbilityInfo->Operators = DuplicateTObjectArray(InOperators);
+	return AbilityInfo;
+}
+
 void UInteractionAbilityInfo::InitAbilityInfo(AActor* InOwnerActor, UInteractionItemComponent* InOwnerComponent)
 {
 	OwnerActor = InOwnerActor;
@@ -46,7 +64,7 @@ void UInteractionAbilityInfo::UnInitAbilityInfo(AActor* InOwnerActor, UInteracti
 	OwnerComponent = nullptr;
 }
 
-void UInteractionAbilityInfo::ActiveAbilityInfo()
+void UInteractionAbilityInfo::ActiveAbilityInfo() const
 {
 	if (Event)
 	{
@@ -54,7 +72,7 @@ void UInteractionAbilityInfo::ActiveAbilityInfo()
 	}
 }
 
-void UInteractionAbilityInfo::DeActiveAbilityInfo()
+void UInteractionAbilityInfo::DeActiveAbilityInfo() const
 {
 	if (Event)
 	{

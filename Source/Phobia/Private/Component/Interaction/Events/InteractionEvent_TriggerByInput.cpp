@@ -2,6 +2,14 @@
 
 #include "Component/Interaction/InteractionItemComponent.h"
 
+UInteractionEvent_TriggerByInput* UInteractionEvent_TriggerByInput::CreateTriggerByInputEvent(const EInteractionEventType InTriggerType, const EInteractionRoleType InRoleType)
+{
+	UInteractionEvent_TriggerByInput* Event = NewObject<UInteractionEvent_TriggerByInput>();
+	Event->TriggerType = InTriggerType;
+	Event->RoleType = InRoleType;
+	return Event;
+}
+
 void UInteractionEvent_TriggerByInput::EventActive(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
 {
 	Super::EventActive(OwnerActor, OwnerComponent);

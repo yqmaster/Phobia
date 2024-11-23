@@ -30,14 +30,10 @@ protected:
 	 */
 
 	// 当初始化的时候
-	virtual void OnInit(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
-	{
-	};
+	virtual void OnInit(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
 
 	// 当反初始化的时候
-	virtual void OnUnInit(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
-	{
-	};
+	virtual void OnUnInit(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent);
 
 	// 当初始化的时候
 	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "On Init"))

@@ -13,3 +13,11 @@ void UInteractionConfigBase::UnInit(const AActor* OwnerActor, UInteractionItemCo
 	OnUnInit(OwnerActor, OwnerComponent);
 	AbilityInfo = nullptr;
 }
+
+void UInteractionConfigBase::OnInit(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
+{
+}
+
+void UInteractionConfigBase::OnUnInit(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
+{
+}
