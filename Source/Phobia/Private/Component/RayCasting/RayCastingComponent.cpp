@@ -38,15 +38,14 @@ void URayCastingComponent::BeginPlay()
 void URayCastingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	CastActor();
 }
 
-void URayCastingComponent::CastActor()
+void URayCastingComponent::CastActor(const FVector& Direction)
 {
 	AActor* Owner = GetOwner();
 	// 定义射线
 	FVector StartLocation = GetOwner()->GetActorLocation();
-	FVector EndLocation = StartLocation + GetOwner()->GetActorForwardVector() * RayCastingDistance;
+	FVector EndLocation = StartLocation + Direction * RayCastingDistance;
 
 	FHitResult HitResult;
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_GameTraceChannel1, CollisionQueryParams);

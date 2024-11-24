@@ -20,9 +20,10 @@ public:
 
 	/**
 	 * @brief 检测是否捕获到可交互物体，如果捕获到，则使执行物体被检测逻辑
+	 * @param Direction 检测方向
 	 */
 	UFUNCTION(BlueprintCallable, Category = "RayCasting")
-	void CastActor();
+	void CastActor(const FVector& Direction);
 private:
 	// 射线检测距离
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RayCasting", meta = (AllowPrivateAccess = "true"))
