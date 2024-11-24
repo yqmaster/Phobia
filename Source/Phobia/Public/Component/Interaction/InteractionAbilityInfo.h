@@ -16,9 +16,7 @@ class PHOBIA_API UInteractionAbilityInfo : public UObject
 
 public:
 	// 创建一个 AbilityInfo
-	static UInteractionAbilityInfo* CreateAbilityInfo(UInteractionEventBase* InEvent, const TArray<UInteractionConditionBase*>& InConditions, const TArray<UInteractionOperatorBase*>& InOperators);
-	// 创建一个 AbilityInfo，并且复制 Event、Conditions、Operators
-	static UInteractionAbilityInfo* CreateAbilityInfoWithCopy(const UInteractionEventBase* InEvent, const TArray<UInteractionConditionBase*>& InConditions, const TArray<UInteractionOperatorBase*>& InOperators);
+	static UInteractionAbilityInfo* CreateAbilityInfo(const FString& InAbilityInfoName, const UInteractionEventBase* InEvent, const TArray<UInteractionConditionBase*>& InConditions, const TArray<UInteractionOperatorBase*>& InOperators);
 
 	// 初始化 AbilityInfo
 	void InitAbilityInfo(AActor* InOwnerActor, UInteractionItemComponent* InOwnerComponent);
@@ -51,6 +49,9 @@ protected:
 	TArray<TObjectPtr<UInteractionOperatorBase>> Operators;
 
 private:
+	UPROPERTY(Transient)
+	FString AbilityInfoName;
+
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<UInteractionOperatorBase>> StartingOperators;
 

@@ -4,18 +4,11 @@
 #include "Component/Interaction/InteractionEventBase.h"
 #include "Component/Interaction/InteractionOperatorBase.h"
 
-UInteractionAbilityInfo* UInteractionAbilityInfo::CreateAbilityInfo(UInteractionEventBase* InEvent, const TArray<UInteractionConditionBase*>& InConditions, const TArray<UInteractionOperatorBase*>& InOperators)
+UInteractionAbilityInfo* UInteractionAbilityInfo::CreateAbilityInfo(const FString& InAbilityInfoName, const UInteractionEventBase* InEvent, const TArray<UInteractionConditionBase*>& InConditions, const TArray<UInteractionOperatorBase*>& InOperators)
 {
+	UE_LOG(LogTemp, Log, TEXT("CreateAbilityInfo for %s"), *InAbilityInfoName);
 	UInteractionAbilityInfo* AbilityInfo = NewObject<UInteractionAbilityInfo>();
-	AbilityInfo->Event = InEvent;
-	AbilityInfo->Conditions = InConditions;
-	AbilityInfo->Operators = InOperators;
-	return AbilityInfo;
-}
-
-UInteractionAbilityInfo* UInteractionAbilityInfo::CreateAbilityInfoWithCopy(const UInteractionEventBase* InEvent, const TArray<UInteractionConditionBase*>& InConditions, const TArray<UInteractionOperatorBase*>& InOperators)
-{
-	UInteractionAbilityInfo* AbilityInfo = NewObject<UInteractionAbilityInfo>();
+	AbilityInfo->AbilityInfoName = InAbilityInfoName;
 	AbilityInfo->Event = DuplicateObject<UInteractionEventBase>(InEvent, nullptr);
 	AbilityInfo->Conditions = DuplicateTObjectArray(InConditions);
 	AbilityInfo->Operators = DuplicateTObjectArray(InOperators);
@@ -24,6 +17,7 @@ UInteractionAbilityInfo* UInteractionAbilityInfo::CreateAbilityInfoWithCopy(cons
 
 void UInteractionAbilityInfo::InitAbilityInfo(AActor* InOwnerActor, UInteractionItemComponent* InOwnerComponent)
 {
+	UE_LOG(LogTemp, Log, TEXT("InitAbilityInfo for %s"), *AbilityInfoName);
 	OwnerActor = InOwnerActor;
 	OwnerComponent = InOwnerComponent;
 
@@ -45,6 +39,7 @@ void UInteractionAbilityInfo::InitAbilityInfo(AActor* InOwnerActor, UInteraction
 
 void UInteractionAbilityInfo::UnInitAbilityInfo(AActor* InOwnerActor, UInteractionItemComponent* InOwnerComponent)
 {
+	UE_LOG(LogTemp, Log, TEXT("UnInitAbilityInfo for %s"), *AbilityInfoName);
 	if (Event)
 	{
 		Event->UnInit(OwnerActor, OwnerComponent, this);
@@ -66,6 +61,7 @@ void UInteractionAbilityInfo::UnInitAbilityInfo(AActor* InOwnerActor, UInteracti
 
 void UInteractionAbilityInfo::ActiveAbilityInfo() const
 {
+	UE_LOG(LogTemp, Log, TEXT("ActiveAbilityInfo for %s"), *AbilityInfoName);
 	if (Event)
 	{
 		Event->ActiveEvent(OwnerActor, OwnerComponent);
@@ -74,6 +70,7 @@ void UInteractionAbilityInfo::ActiveAbilityInfo() const
 
 void UInteractionAbilityInfo::DeActiveAbilityInfo() const
 {
+	UE_LOG(LogTemp, Log, TEXT("DeActiveAbilityInfo for %s"), *AbilityInfoName);
 	if (Event)
 	{
 		Event->DeActiveEvent(OwnerActor, OwnerComponent);
@@ -82,6 +79,7 @@ void UInteractionAbilityInfo::DeActiveAbilityInfo() const
 
 void UInteractionAbilityInfo::TriggerAbilityInfoEventStart(AActor* TakerActor)
 {
+	UE_LOG(LogTemp, Log, TEXT("TriggerAbilityInfoEventStart for %s"), *AbilityInfoName);
 	// 条件检查
 	bool CheckCondition = true;
 	for (UInteractionConditionBase* Condition : Conditions)
@@ -104,6 +102,7 @@ void UInteractionAbilityInfo::TriggerAbilityInfoEventStart(AActor* TakerActor)
 
 void UInteractionAbilityInfo::TriggerAbilityInfoEventEnd(AActor* TakerActor)
 {
+	UE_LOG(LogTemp, Log, TEXT("TriggerAbilityInfoEventEnd for %s"), *AbilityInfoName);
 	StartingOperators.RemoveAllSwap([this, TakerActor](UInteractionOperatorBase* Operator)
 	{
 		Operator->EndDoOperator(TakerActor, OwnerActor, OwnerComponent);

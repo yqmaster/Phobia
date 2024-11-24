@@ -27,6 +27,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TriggerInteractionByPress(const EInteractionRoleType RoleType, const bool IsStart);
 
+protected:
+	UInteractionItemComponent* FindInItemMap(const EInteractionRoleType RoleType) const;
+	UInteractionItemComponent* FindInCachedItemMap(const EInteractionRoleType RoleType) const;
+
 private:
 	UPROPERTY(Transient)
 	TMap<EInteractionRoleType, TObjectPtr<UInteractionItemComponent>> InteractionItemMap;

@@ -20,7 +20,7 @@ void UInteractionItemComponent::BeginPlay()
 	AbilityInfos.Empty();
 	if (InteractionAbilityAsset)
 	{
-		for (UInteractionAbilityInfo* AbilityInfo : InteractionAbilityAsset->GetAllAbilityInfos())
+		for (UInteractionAbilityInfo* AbilityInfo : InteractionAbilityAsset->GetAllAbilityInfos(OwnerActor))
 		{
 			ensureAlwaysMsgf(AbilityInfo, TEXT("[%s] passing a nullptr AbilityInfo from GetAllAbilityInfos in [%s]"), *InteractionAbilityAsset->GetName(), *OwnerActor->GetName());
 			if (AbilityInfo)

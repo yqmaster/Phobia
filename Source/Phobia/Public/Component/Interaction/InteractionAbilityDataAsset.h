@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Component/Backpack/BackpackComponent.h"
 #include "Engine/DataAsset.h"
 #include "Component/Interaction/InteractionTypeDefine.h"
 #include "InteractionAbilityDataAsset.generated.h"
@@ -18,15 +19,6 @@ enum class EInteractionEffectPlaceType : uint8
 	Hand UMETA(DisplayName = "手上"),
 };
 
-// 可拾取物品的丢弃类型
-UENUM(BlueprintType)
-enum class EDropType : uint8
-{
-	None UMETA(DisplayName = "空，无意义"),
-	Trough UMETA(DisplayName = "抛物线丢弃"),
-	Drop UMETA(DisplayName = "垂直丢弃"),
-};
-
 /**
  * 
  */
@@ -38,22 +30,24 @@ class PHOBIA_API UInteractionAbilityDataAsset : public UPrimaryDataAsset
 public:
 	// 外界调用，获取所有的 AbilityInfo
 	UFUNCTION(BlueprintCallable)
-	TArray<UInteractionAbilityInfo*> GetAllAbilityInfos() const;
+	TArray<UInteractionAbilityInfo*> GetAllAbilityInfos(const AActor* InOwner) const;
 
 private:
 	// 收集拾取相关的信息
-	void GetPickAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
+	void GetPickAbilityInfo(const AActor* InOwner, TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
 	// 收集丢弃相关的信息
-	void GetDropAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
+	void GetDropAbilityInfo(const AActor* InOwner, TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
 	// 收集放置相关的信息
-	void GetPutAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
+	void GetPutAbilityInfo(const AActor* InOwner, TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
 	// 收集点击相关的信息
-	void GetClickAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
+	void GetClickAbilityInfo(const AActor* InOwner, TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
 	// 收集长按相关的信息-·	
-	void GetPressAbilityInfo(TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
+	void GetPressAbilityInfo(const AActor* InOwner, TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
 
 	// 根据 EffectPlaceType 获取 RoleType
 	static EInteractionRoleType GetRoleTypeByEffectPlaceType(EInteractionEffectPlaceType InEffectPlaceType);
+	// 将 EffectPlaceType 转换为字符串
+	static FString EInteractionRoleTypeToString(const EInteractionEffectPlaceType InEffectPlaceType);
 
 protected:
 	// 拾取/丢弃/放置
@@ -62,24 +56,28 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "是否能拾取丢弃"))
 	bool bCanBePick = false;
 
+	// 是否能被拾取
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "是否添加到无限背包", EditCondition = "bCanBePick", EditConditionHides))
+	bool bAddToInfiniteBackpack = false;
+
 	// 拾取的效果
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "拾取的额外效果", EditCondition = "bCanBePick", EditConditionHides), Instanced)
 	TArray<TObjectPtr<UInteractionOperatorBase>> PickOperators;
 
 	// 丢弃时的效果
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "丢弃的方式", EditCondition = "bCanBePick", EditConditionHides))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "丢弃的方式", EditCondition = "bCanBePick && !bAddToInfiniteBackpack", EditConditionHides))
 	EDropType DropType = EDropType::None;
 
 	// 是否能被放置
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "是否能被放置", EditCondition = "bCanBePick", EditConditionHides))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "是否能被放置", EditCondition = "bCanBePick && !bAddToInfiniteBackpack", EditConditionHides))
 	bool bCanBePut = false;
 
 	// 放置的条件检查
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "放置条件", EditCondition = "bCanBePick && bCanBePut", EditConditionHides), Instanced)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "放置条件", EditCondition = "bCanBePick && bCanBePut && !bAddToInfiniteBackpack", EditConditionHides), Instanced)
 	TArray<TObjectPtr<UInteractionConditionBase>> PutConditions;
 
 	// 放置的效果
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "放置的效果", EditCondition = "bCanBePick && bCanBePut", EditConditionHides), Instanced)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "放置的效果", EditCondition = "bCanBePick && bCanBePut && !bAddToInfiniteBackpack", EditConditionHides), Instanced)
 	TArray<TObjectPtr<UInteractionOperatorBase>> PutOperators;
 
 	// 点击

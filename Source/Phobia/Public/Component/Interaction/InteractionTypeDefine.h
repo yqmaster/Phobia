@@ -1,6 +1,8 @@
 ﻿#pragma once
 
+#include "Kismet/BlueprintFunctionLibrary.h"
 #include "CoreMinimal.h"
+#include "InteractionTypeDefine.generated.h"
 
 // 可交互物品的交互事件类型
 UENUM(BlueprintType)
@@ -21,4 +23,14 @@ enum class EInteractionRoleType : uint8
 	Pick UMETA(DisplayName = "拾取"),
 	Drop UMETA(DisplayName = "丢弃"),
 	Put UMETA(DisplayName = "放置"),
+};
+
+UCLASS()
+class PHOBIA_API UInteractionFunctionLibrary : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintCallable)
+	static FString EInteractionRoleTypeToString(const EInteractionRoleType InRoleType);
 };
