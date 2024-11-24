@@ -4,9 +4,6 @@
 #include "UObject/Interface.h"
 #include "BackpackInterface.generated.h"
 
-class AActor;
-class ACharacter;
-
 UINTERFACE(MinimalAPI)
 class UBackpackInterface : public UInterface
 {

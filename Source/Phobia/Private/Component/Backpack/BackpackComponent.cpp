@@ -3,8 +3,6 @@
 #include "Character/PCharacterBase.h"
 #include "Component/Backpack/BackpackInterface.h"
 
-#define UNTOUCHABLE_LOCATION FVector(0.f, 0.f, -1000.f)
-
 UBackpackComponent::UBackpackComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
@@ -140,7 +138,7 @@ void UBackpackComponent::SetCurrentItemInternal(AActor* NewItem)
 	if (const TObjectPtr<AActor> InItem = CurrentItem)
 	{
 		// 通知物体各组件被拿在手中了
-		APCharacterBase* OwnerCharacter = Cast<APCharacterBase>(GetOwner());
+		ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
 		for (UActorComponent* Component : InItem->GetComponentsByInterface(UBackpackInterface::StaticClass()))
 		{
 			IBackpackInterface::Execute_OnSetToHand(Component, InItem, OwnerCharacter);
@@ -153,7 +151,7 @@ void UBackpackComponent::UnSetCurrentItemInternal()
 	if (const TObjectPtr<AActor> InItem = CurrentItem)
 	{
 		// 通知物体各组件被拿在手中了
-		APCharacterBase* OwnerCharacter = Cast<APCharacterBase>(GetOwner());
+		ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
 		for (UActorComponent* Component : InItem->GetComponentsByInterface(UBackpackInterface::StaticClass()))
 		{
 			IBackpackInterface::Execute_OnUnSetFromHand(Component, InItem, OwnerCharacter);
@@ -188,10 +186,10 @@ void UBackpackComponent::AddToBackpackInternal(AActor* InItem)
 	PackageItems.Add(InItem);
 
 	// TODO 后面这里要写完善的
-	InItem->SetActorLocation(UNTOUCHABLE_LOCATION);
+	// InItem->SetActorLocation(UNTOUCHABLE_LOCATION, false, nullptr, ETeleportType::ResetPhysics);
 
 	// 通知物体各组件被加入到列表了
-	APCharacterBase* OwnerCharacter = Cast<APCharacterBase>(GetOwner());
+	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
 	for (UActorComponent* Component : InItem->GetComponentsByInterface(UBackpackInterface::StaticClass()))
 	{
 		IBackpackInterface::Execute_OnAddToBackpack(Component, InItem, OwnerCharacter);
@@ -200,15 +198,15 @@ void UBackpackComponent::AddToBackpackInternal(AActor* InItem)
 
 void UBackpackComponent::RemoveFromBackpackInternal(AActor* InItem)
 {
+	// TODO 后面这里要写完善的
+	// InItem->SetActorLocation(OwnerCharacter->GetActorLocation() + OwnerCharacter->GetActorForwardVector() * 100, false, nullptr, ETeleportType::ResetPhysics);
+
 	// 通知物体各组件被移除了
-	APCharacterBase* OwnerCharacter = Cast<APCharacterBase>(GetOwner());
+	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
 	for (UActorComponent* Component : InItem->GetComponentsByInterface(UBackpackInterface::StaticClass()))
 	{
 		IBackpackInterface::Execute_OnRemoveFromBackpack(Component, InItem, OwnerCharacter);
 	}
-
-	// TODO 后面这里要写完善的
-	InItem->SetActorLocation(OwnerCharacter->GetActorLocation() + OwnerCharacter->GetActorForwardVector() * 100);
 
 	PackageItems.Remove(InItem);
 }
