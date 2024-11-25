@@ -1,10 +1,9 @@
-#include "Component/Controller//InteractionControllerComponent.h"
+#include "Component/Controller/InteractionControllerComponent.h"
 
 #include "EnhancedInputComponent.h"
-#include "3C/Controller/PPlayerController.h"
-#include "Character/PCharacterBase.h"
 #include "Component/Interaction/InteractionPlayerComponent.h"
 #include "Component/Interaction/InteractionTypeDefine.h"
+#include "GameFramework/Character.h"
 
 void UInteractionControllerComponent::OnSetupInputComponent(UEnhancedInputComponent* InInputComponent)
 {
@@ -17,7 +16,7 @@ void UInteractionControllerComponent::OnSetupInputComponent(UEnhancedInputCompon
 	BindKey(InInputComponent, EInteractionRoleType::Put, PutAction);
 }
 
-void UInteractionControllerComponent::OnPossessed(APCharacterBase* InCharacter)
+void UInteractionControllerComponent::OnPossessed(ACharacter* InCharacter)
 {
 	Super::OnPossessed(InCharacter);
 
@@ -58,7 +57,7 @@ void UInteractionControllerComponent::BindKey(UEnhancedInputComponent* InInputCo
 
 void UInteractionControllerComponent::CacheInteractionComponent()
 {
-	const APCharacterBase* Character = GetControlledCharacter();
+	const ACharacter* Character = GetControlledCharacter();
 	if (!Character)
 	{
 		ensureAlwaysMsgf(false, TEXT("GetControlledCharacter for [%s] at [%s] failed, Character is nullptr"), *GetName(), *GetOwner()->GetName());

@@ -1,9 +1,8 @@
 #include "Component/Controller/PawnMoveControllerComponent.h"
 
 #include "EnhancedInputComponent.h"
-#include "3C/Controller/PPlayerController.h"
-#include "Character/PCharacterBase.h"
 #include "Component/Character/PawnMoveComponent.h"
+#include "GameFramework/Character.h"
 
 void UPawnMoveControllerComponent::OnSetupInputComponent(UEnhancedInputComponent* InInputComponent)
 {
@@ -19,7 +18,7 @@ void UPawnMoveControllerComponent::OnSetupInputComponent(UEnhancedInputComponent
 	}
 }
 
-void UPawnMoveControllerComponent::OnPossessed(APCharacterBase* InCharacter)
+void UPawnMoveControllerComponent::OnPossessed(ACharacter* InCharacter)
 {
 	Super::OnPossessed(InCharacter);
 
@@ -59,19 +58,16 @@ void UPawnMoveControllerComponent::EndRush(const FInputActionValue& InValue)
 
 void UPawnMoveControllerComponent::CachePawnMoveComponent()
 {
-	if (const APPlayerController* PC = GetPlayerController())
+	if (const ACharacter* Character = GetControlledCharacter())
 	{
-		if (const APCharacterBase* Character = PC->GetControlledCharacter())
+		UPawnMoveComponent* Component = Character->GetComponentByClass<UPawnMoveComponent>();
+		if (!Component)
 		{
-			UPawnMoveComponent* Component = Character->GetComponentByClass<UPawnMoveComponent>();
-			if (!Component)
-			{
-				UE_LOG(LogTemp, Error, TEXT("[%s] init failed, [%s] does not have UPawnMoveComponent"), *GetName(), *Character->GetName());
-				return;
-			}
-
-			PawnMoveComponent = Component;
+			UE_LOG(LogTemp, Error, TEXT("[%s] init failed, [%s] does not have UPawnMoveComponent"), *GetName(), *Character->GetName());
+			return;
 		}
+
+		PawnMoveComponent = Component;
 	}
 }
 

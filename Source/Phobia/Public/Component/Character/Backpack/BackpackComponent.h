@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Character/CharacterComponent.h"
 #include "BackpackComponent.generated.h"
 
 // 可拾取物品的丢弃类型
@@ -17,7 +17,7 @@ enum class EDropType : uint8
  * 
  */
 UCLASS(Blueprintable, Abstract, ClassGroup = (Backpack))
-class PHOBIA_API UBackpackComponent : public UActorComponent
+class PHOBIA_API UBackpackComponent : public UCharacterComponent
 {
 	GENERATED_BODY()
 

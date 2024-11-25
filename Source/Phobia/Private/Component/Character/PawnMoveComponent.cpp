@@ -1,21 +1,20 @@
 #include "Component/Character/PawnMoveComponent.h"
-#include "3C/Controller/PPlayerController.h"
-#include "GameFramework/CharacterMovementComponent.h"
 
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UPawnMoveComponent::UPawnMoveComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-
 }
 
 void UPawnMoveComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (APCharacterBase* Character = Cast<APCharacterBase>(GetOwner()))
+	if (UCharacterMovementComponent* MovementComponent = GetCharacterMovementComponent())
 	{
-		Character->GetCharacterMovementComponent()->MaxWalkSpeed = LowMoveSpeed;
+		MovementComponent->MaxWalkSpeed = LowMoveSpeed;
 	}
 
 	CurStrength = MaxStrength;
@@ -25,12 +24,11 @@ void UPawnMoveComponent::BeginPlay()
 void UPawnMoveComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-
 }
 
 void UPawnMoveComponent::Move(const FVector2D MoveAxis)
 {
-	if (APCharacterBase* Character = Cast<APCharacterBase>(GetOwner()))
+	if (ACharacter* Character = GetOwnerCharacter())
 	{
 		const FVector RightVector = Character->GetActorRightVector() * MoveAxis.X;
 		const FVector ForwardVector = Character->GetActorForwardVector() * MoveAxis.Y;
@@ -90,9 +88,9 @@ void UPawnMoveComponent::EndRush()
 
 void UPawnMoveComponent::StartRushImp()
 {
-	if (APCharacterBase* Character = Cast<APCharacterBase>(GetOwner()))
+	if (UCharacterMovementComponent* MovementComponent = GetCharacterMovementComponent())
 	{
-		Character->GetCharacterMovementComponent()->MaxWalkSpeed = HighMoveSpeed;
+		MovementComponent->MaxWalkSpeed = HighMoveSpeed;
 	}
 
 	FTimerManager& TimerManager = GetWorld()->GetTimerManager();
@@ -104,9 +102,9 @@ void UPawnMoveComponent::StartRushImp()
 
 void UPawnMoveComponent::EndRushImp(const bool bEndByPlayer)
 {
-	if (APCharacterBase* Character = Cast<APCharacterBase>(GetOwner()))
+	if (UCharacterMovementComponent* MovementComponent = GetCharacterMovementComponent())
 	{
-		Character->GetCharacterMovementComponent()->MaxWalkSpeed = LowMoveSpeed;
+		MovementComponent->MaxWalkSpeed = LowMoveSpeed;
 	}
 
 	FTimerManager& TimerManager = GetWorld()->GetTimerManager();

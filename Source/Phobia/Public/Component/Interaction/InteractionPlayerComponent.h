@@ -1,14 +1,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Character/CharacterComponent.h"
 #include "InteractionPlayerComponent.generated.h"
 
 class UInteractionItemComponent;
 enum class EInteractionRoleType : uint8;
 
-UCLASS(Blueprintable, abstract, ClassGroup = (Interaction))
-class PHOBIA_API UInteractionPlayerComponent : public UActorComponent
+UCLASS(Blueprintable, Abstract, ClassGroup = (Interaction))
+class PHOBIA_API UInteractionPlayerComponent : public UCharacterComponent
 {
 	GENERATED_BODY()
 

@@ -1,19 +1,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Character/CharacterComponent.h"
 #include "PawnMoveComponent.generated.h"
 
 UENUM(BlueprintType)
 enum class EStrengthStateType : uint8
 {
-	IsFull				UMETA(DisplayName = "已满"),
-	OnUsing				UMETA(DisplayName = "使用中"),
-	RecoveringCanUse	UMETA(DisplayName = "恢复中并可使用"),
-	RecoveringNoUse		UMETA(DisplayName = "恢复中不可使用"),
+	IsFull UMETA(DisplayName = "已满"),
+	OnUsing UMETA(DisplayName = "使用中"),
+	RecoveringCanUse UMETA(DisplayName = "恢复中并可使用"),
+	RecoveringNoUse UMETA(DisplayName = "恢复中不可使用"),
 };
 
 UCLASS(Blueprintable, abstract, ClassGroup = (ControllerComponent))
-class PHOBIA_API UPawnMoveComponent : public UActorComponent
+class PHOBIA_API UPawnMoveComponent : public UCharacterComponent
 {
 	GENERATED_BODY()
 

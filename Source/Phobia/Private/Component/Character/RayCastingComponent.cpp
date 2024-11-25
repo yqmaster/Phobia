@@ -1,4 +1,4 @@
-#include "Component/RayCasting/RayCastingComponent.h"
+#include "Component/Character/RayCastingComponent.h"
 
 #include "Component/Item/Interface/DetectedItemInterface.h"
 
@@ -11,14 +11,10 @@
 void PostCast(AActor* InOwner, const AActor* HitActor, bool bDetected)
 {
 	UE_LOG(LogTemp, Log, TEXT("PostCast for [%s], Result [%s]"), *HitActor->GetName(), bDetected ? TEXT("True") : TEXT("False"));
-	TArray<UActorComponent*> ActorComponents;
-	HitActor->GetComponents(UActorComponent::StaticClass(), ActorComponents);
-	for (UActorComponent* ActorComponent : ActorComponents)
+
+	for (UActorComponent* ActorComponent : HitActor->GetComponentsByInterface(UDetectedItemInterface::StaticClass()))
 	{
-		if (ActorComponent->Implements<UDetectedItemInterface>())
-		{
-			IDetectedItemInterface::Execute_OnDetected(ActorComponent, InOwner, bDetected);
-		}
+		IDetectedItemInterface::Execute_OnDetected(ActorComponent, InOwner, bDetected);
 	}
 }
 

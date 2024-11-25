@@ -1,6 +1,6 @@
 #include "Component/Interaction/Operators/InteractionOperator_DropItem.h"
 
-#include "Component/Backpack/BackpackComponent.h"
+#include "Component/Character/Backpack/BackpackComponent.h"
 
 UInteractionOperator_DropItem* UInteractionOperator_DropItem::CreateDropItemOperator(const EDropType InDropType)
 {

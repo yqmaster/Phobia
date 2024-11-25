@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Component/Controller/ControllerComponentBase.h"
+#include "PlayerController/PlayerControllerComponent.h"
 #include "PawnMoveControllerComponent.generated.h"
 
 class UInputAction;
@@ -12,13 +12,13 @@ class UPawnMoveComponent;
  * 
  */
 UCLASS(Blueprintable, ClassGroup = (ControllerComponent))
-class PHOBIA_API UPawnMoveControllerComponent : public UControllerComponentBase
+class PHOBIA_API UPawnMoveControllerComponent : public UPlayerControllerComponent
 {
 	GENERATED_BODY()
 
 protected:
 	virtual void OnSetupInputComponent(UEnhancedInputComponent* InInputComponent) override;
-	virtual void OnPossessed(APCharacterBase* InCharacter) override;
+	virtual void OnPossessed(ACharacter* InCharacter) override;
 	virtual void OnUnPossessed() override;
 
 	void Move(const FInputActionValue& InValue);

@@ -19,6 +19,10 @@ resharper_cpp_wrap_lines = true
 resharper_cpp_wrap_before_colon = true
 resharper_cpp_line_break_before_comma_in_member_initializer_lists = true
 
+# C# files
+[*.{cs,csx}]
+resharper_trailing_comma_in_multiline_lists = true
+
 # C++ files
 [*.{cpp,h}]
 insert_final_newline = true

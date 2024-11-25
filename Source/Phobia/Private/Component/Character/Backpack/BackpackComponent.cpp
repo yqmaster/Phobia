@@ -1,7 +1,6 @@
-#include "Component/Backpack/BackpackComponent.h"
+#include "Component/Character/Backpack/BackpackComponent.h"
 
-#include "Character/PCharacterBase.h"
-#include "Component/Backpack/BackpackInterface.h"
+#include "Component/Character/Backpack/BackpackInterface.h"
 
 UBackpackComponent::UBackpackComponent()
 {
@@ -138,7 +137,7 @@ void UBackpackComponent::SetCurrentItemInternal(AActor* NewItem)
 	if (const TObjectPtr<AActor> InItem = CurrentItem)
 	{
 		// 通知物体各组件被拿在手中了
-		ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
+		ACharacter* OwnerCharacter = GetOwnerCharacter();
 		for (UActorComponent* Component : InItem->GetComponentsByInterface(UBackpackInterface::StaticClass()))
 		{
 			IBackpackInterface::Execute_OnSetToHand(Component, InItem, OwnerCharacter);
@@ -151,7 +150,7 @@ void UBackpackComponent::UnSetCurrentItemInternal()
 	if (const TObjectPtr<AActor> InItem = CurrentItem)
 	{
 		// 通知物体各组件被拿在手中了
-		ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
+		ACharacter* OwnerCharacter = GetOwnerCharacter();
 		for (UActorComponent* Component : InItem->GetComponentsByInterface(UBackpackInterface::StaticClass()))
 		{
 			IBackpackInterface::Execute_OnUnSetFromHand(Component, InItem, OwnerCharacter);
@@ -189,7 +188,7 @@ void UBackpackComponent::AddToBackpackInternal(AActor* InItem)
 	// InItem->SetActorLocation(UNTOUCHABLE_LOCATION, false, nullptr, ETeleportType::ResetPhysics);
 
 	// 通知物体各组件被加入到列表了
-	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
+	ACharacter* OwnerCharacter = GetOwnerCharacter();
 	for (UActorComponent* Component : InItem->GetComponentsByInterface(UBackpackInterface::StaticClass()))
 	{
 		IBackpackInterface::Execute_OnAddToBackpack(Component, InItem, OwnerCharacter);
@@ -202,7 +201,7 @@ void UBackpackComponent::RemoveFromBackpackInternal(AActor* InItem)
 	// InItem->SetActorLocation(OwnerCharacter->GetActorLocation() + OwnerCharacter->GetActorForwardVector() * 100, false, nullptr, ETeleportType::ResetPhysics);
 
 	// 通知物体各组件被移除了
-	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
+	ACharacter* OwnerCharacter = GetOwnerCharacter();
 	for (UActorComponent* Component : InItem->GetComponentsByInterface(UBackpackInterface::StaticClass()))
 	{
 		IBackpackInterface::Execute_OnRemoveFromBackpack(Component, InItem, OwnerCharacter);

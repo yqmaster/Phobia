@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Component/Controller/ControllerComponentBase.h"
+#include "PlayerController/PlayerControllerComponent.h"
 #include "InteractionControllerComponent.generated.h"
 
 enum class EInteractionRoleType : uint8;
@@ -25,13 +25,13 @@ struct PHOBIA_API FStartPressKeyInfo
  * 
  */
 UCLASS(Blueprintable, ClassGroup = (ControllerComponent))
-class PHOBIA_API UInteractionControllerComponent : public UControllerComponentBase
+class PHOBIA_API UInteractionControllerComponent : public UPlayerControllerComponent
 {
 	GENERATED_BODY()
 
 protected:
 	virtual void OnSetupInputComponent(UEnhancedInputComponent* InInputComponent) override;
-	virtual void OnPossessed(APCharacterBase* InCharacter) override;
+	virtual void OnPossessed(ACharacter* InCharacter) override;
 	virtual void OnUnPossessed() override;
 
 private:
