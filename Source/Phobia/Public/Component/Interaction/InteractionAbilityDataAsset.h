@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Component/Character/Backpack/BackpackComponent.h"
+#include "Component/Backpack/BackpackDefine.h"
 #include "Engine/DataAsset.h"
 #include "Component/Interaction/InteractionTypeDefine.h"
 #include "InteractionAbilityDataAsset.generated.h"

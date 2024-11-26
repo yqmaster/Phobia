@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Component/Character/Backpack/BackpackComponent.h"
+#include "Component/Backpack/BackpackDefine.h"
 #include "ConfigClass/SimpleAbilityConfigOperatorBase.h"
 #include "InteractionOperator_DropItem.generated.h"
 

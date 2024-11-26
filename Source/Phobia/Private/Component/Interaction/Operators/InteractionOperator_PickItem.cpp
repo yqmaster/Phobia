@@ -1,6 +1,6 @@
 #include "Component/Interaction/Operators/InteractionOperator_PickItem.h"
 
-#include "Component/Character/Backpack/BackpackComponent.h"
+#include "Component/Backpack/BackpackComponent.h"
 
 UInteractionOperator_PickItem* UInteractionOperator_PickItem::CreatePickItemOperator(const bool bAddInfiniteBackpack)
 {
