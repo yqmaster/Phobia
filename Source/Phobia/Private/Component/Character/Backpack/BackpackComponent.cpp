@@ -57,9 +57,11 @@ bool UBackpackComponent::AddToBackpack(AActor* InItem)
 		// 刚拾取的拿在手上
 		UnSetCurrentItemInternal();
 		SetCurrentItemInternal(InItem);
+		UE_LOG(LogTemp, Log, TEXT("AddToBackpack for [%s] to [%s] Success"), *InItem->GetName(), *GetOwner()->GetName());
 		return true;
 	}
 
+	UE_LOG(LogTemp, Log, TEXT("AddToBackpack for [%s] to [%s] Failed, Package is full or already in package"), *InItem->GetName(), *GetOwner()->GetName());
 	return false;
 }
 

@@ -1,7 +1,7 @@
 #include "Component/Interaction/InteractionItemComponent.h"
 
+#include "SimpleAbilitySkill.h"
 #include "Component/Interaction/InteractionAbilityDataAsset.h"
-#include "Component/Interaction/InteractionAbilityInfo.h"
 
 UInteractionItemComponent::UInteractionItemComponent()
 {
@@ -20,20 +20,15 @@ void UInteractionItemComponent::BeginPlay()
 	AbilityInfos.Empty();
 	if (InteractionAbilityAsset)
 	{
-		for (UInteractionAbilityInfo* AbilityInfo : InteractionAbilityAsset->GetAllAbilityInfos(OwnerActor))
+		for (USimpleAbilitySkill* AbilityInfo : InteractionAbilityAsset->GetAllAbilityInfos(OwnerActor))
 		{
 			ensureAlwaysMsgf(AbilityInfo, TEXT("[%s] passing a nullptr AbilityInfo from GetAllAbilityInfos in [%s]"), *InteractionAbilityAsset->GetName(), *OwnerActor->GetName());
 			if (AbilityInfo)
 			{
-				AbilityInfo->InitAbilityInfo(OwnerActor, this);
+				USimpleAbilitySkill::ActiveSkill(AbilityInfo);
 				AbilityInfos.Add(AbilityInfo);
 			}
 		}
-	}
-
-	for (const UInteractionAbilityInfo* AbilityInfo : AbilityInfos)
-	{
-		AbilityInfo->ActiveAbilityInfo();
 	}
 }
 
@@ -41,11 +36,10 @@ void UInteractionItemComponent::EndPlay(const EEndPlayReason::Type EndPlayReason
 {
 	AActor* OwnerActor = GetOwner();
 
-	for (UInteractionAbilityInfo* AbilityInfo : AbilityInfos)
+	for (USimpleAbilitySkill* AbilityInfo : AbilityInfos)
 	{
 		ensureAlwaysMsgf(AbilityInfo, TEXT("[%s] has invalid AbilityInfo when EndPlay in [%s]"), *GetName(), *OwnerActor->GetName());
-		AbilityInfo->DeActiveAbilityInfo();
-		AbilityInfo->UnInitAbilityInfo(OwnerActor, this);
+		USimpleAbilitySkill::DestroySkill(AbilityInfo);
 	}
 
 	Super::EndPlay(EndPlayReason);

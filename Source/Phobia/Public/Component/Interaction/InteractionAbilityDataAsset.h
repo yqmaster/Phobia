@@ -6,10 +6,10 @@
 #include "Component/Interaction/InteractionTypeDefine.h"
 #include "InteractionAbilityDataAsset.generated.h"
 
-class UInteractionEventBase;
-class UInteractionConditionBase;
-class UInteractionOperatorBase;
-class UInteractionAbilityInfo;
+class USimpleAbilityConfigEventBase;
+class USimpleAbilityConfigConditionBase;
+class USimpleAbilityConfigOperatorBase;
+class USimpleAbilitySkill;
 
 // 可交互物品的可生效位置
 UENUM(BlueprintType)
@@ -30,19 +30,19 @@ class PHOBIA_API UInteractionAbilityDataAsset : public UPrimaryDataAsset
 public:
 	// 外界调用，获取所有的 AbilityInfo
 	UFUNCTION(BlueprintCallable)
-	TArray<UInteractionAbilityInfo*> GetAllAbilityInfos(const AActor* InOwner) const;
+	TArray<USimpleAbilitySkill*> GetAllAbilityInfos(AActor* InOwner) const;
 
 private:
 	// 收集拾取相关的信息
-	void GetPickAbilityInfo(const AActor* InOwner, TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
+	void GetPickAbilityInfo(AActor* InOwner, TArray<USimpleAbilitySkill*>& AbilityInfos) const;
 	// 收集丢弃相关的信息
-	void GetDropAbilityInfo(const AActor* InOwner, TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
+	void GetDropAbilityInfo(AActor* InOwner, TArray<USimpleAbilitySkill*>& AbilityInfos) const;
 	// 收集放置相关的信息
-	void GetPutAbilityInfo(const AActor* InOwner, TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
+	void GetPutAbilityInfo(AActor* InOwner, TArray<USimpleAbilitySkill*>& AbilityInfos) const;
 	// 收集点击相关的信息
-	void GetClickAbilityInfo(const AActor* InOwner, TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
+	void GetClickAbilityInfo(AActor* InOwner, TArray<USimpleAbilitySkill*>& AbilityInfos) const;
 	// 收集长按相关的信息-·	
-	void GetPressAbilityInfo(const AActor* InOwner, TArray<UInteractionAbilityInfo*>& AbilityInfos) const;
+	void GetPressAbilityInfo(AActor* InOwner, TArray<USimpleAbilitySkill*>& AbilityInfos) const;
 
 	// 根据 EffectPlaceType 获取 RoleType
 	static EInteractionRoleType GetRoleTypeByEffectPlaceType(EInteractionEffectPlaceType InEffectPlaceType);
@@ -62,7 +62,7 @@ protected:
 
 	// 拾取的效果
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "拾取的额外效果", EditCondition = "bCanBePick", EditConditionHides), Instanced)
-	TArray<TObjectPtr<UInteractionOperatorBase>> PickOperators;
+	TArray<TObjectPtr<USimpleAbilityConfigOperatorBase>> PickOperators;
 
 	// 丢弃时的效果
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "丢弃的方式", EditCondition = "bCanBePick && !bAddToInfiniteBackpack", EditConditionHides))
@@ -74,11 +74,11 @@ protected:
 
 	// 放置的条件检查
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "放置条件", EditCondition = "bCanBePick && bCanBePut && !bAddToInfiniteBackpack", EditConditionHides), Instanced)
-	TArray<TObjectPtr<UInteractionConditionBase>> PutConditions;
+	TArray<TObjectPtr<USimpleAbilityConfigConditionBase>> PutConditions;
 
 	// 放置的效果
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "放置的效果", EditCondition = "bCanBePick && bCanBePut && !bAddToInfiniteBackpack", EditConditionHides), Instanced)
-	TArray<TObjectPtr<UInteractionOperatorBase>> PutOperators;
+	TArray<TObjectPtr<USimpleAbilityConfigOperatorBase>> PutOperators;
 
 	// 点击
 
@@ -88,11 +88,11 @@ protected:
 
 	// 点击前的条件检查
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "点击条件", EditCondition = "bCanBeClick", EditConditionHides), Instanced)
-	TArray<TObjectPtr<UInteractionConditionBase>> ClickConditions;
+	TArray<TObjectPtr<USimpleAbilityConfigConditionBase>> ClickConditions;
 
 	// 点击时的效果
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "点击效果", EditCondition = "bCanBeClick", EditConditionHides), Instanced)
-	TArray<TObjectPtr<UInteractionOperatorBase>> ClickOperators;
+	TArray<TObjectPtr<USimpleAbilityConfigOperatorBase>> ClickOperators;
 
 	// 点击可作用的地方
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "点击可作用的地方", EditCondition = "bCanBeClick", EditConditionHides))
@@ -106,11 +106,11 @@ protected:
 
 	// 长按前的条件检查
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "长按条件", EditCondition = "bCanBePress", EditConditionHides), Instanced)
-	TArray<TObjectPtr<UInteractionConditionBase>> PressConditions;
+	TArray<TObjectPtr<USimpleAbilityConfigConditionBase>> PressConditions;
 
 	// 长按时的效果
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "长按效果", EditCondition = "bCanBePress", EditConditionHides), Instanced)
-	TArray<TObjectPtr<UInteractionOperatorBase>> PressOperators;
+	TArray<TObjectPtr<USimpleAbilityConfigOperatorBase>> PressOperators;
 
 	// 长按可作用的地方
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "长按可作用的地方", EditCondition = "bCanBePress", EditConditionHides))

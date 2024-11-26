@@ -9,24 +9,28 @@ UInteractionOperator_PickItem* UInteractionOperator_PickItem::CreatePickItemOper
 	return Operator;
 }
 
-void UInteractionOperator_PickItem::DoOperatorBegin(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
+void UInteractionOperator_PickItem::DoOperatorBegin(AActor* InOwner, AActor* InCauser)
 {
-	Super::DoOperatorBegin(TakerActor, OwnerActor, OwnerComponent);
+	Super::DoOperatorBegin(InOwner, InCauser);
 
-	if (UBackpackComponent* BackpackComponent = TakerActor->FindComponentByClass<UBackpackComponent>())
+	if (UBackpackComponent* BackpackComponent = InCauser->FindComponentByClass<UBackpackComponent>())
 	{
 		if (bAddInfiniteBackpack)
 		{
-			BackpackComponent->AddToInfiniteBackpack(OwnerActor);
+			BackpackComponent->AddToInfiniteBackpack(InOwner);
 		}
 		else
 		{
-			BackpackComponent->AddToBackpack(OwnerActor);
+			BackpackComponent->AddToBackpack(InOwner);
 		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s DoOperatorBegin failed, [%s] does not have UBackpackComponent"), *GetConfigInfo(), *InCauser->GetName());
 	}
 }
 
-void UInteractionOperator_PickItem::DoOperatorEnd(AActor* TakerActor, AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
+void UInteractionOperator_PickItem::DoOperatorEnd(AActor* InOwner, AActor* InCauser)
 {
-	Super::DoOperatorEnd(TakerActor, OwnerActor, OwnerComponent);
+	Super::DoOperatorEnd(InOwner, InCauser);
 }

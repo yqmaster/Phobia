@@ -14,6 +14,7 @@ public class Phobia : ModuleRules
 			"InputCore",
 			"EnhancedInput",
 			"BaseClass",
+			"SimpleAbility",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]

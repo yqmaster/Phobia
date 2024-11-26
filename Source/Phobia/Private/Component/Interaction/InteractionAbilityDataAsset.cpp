@@ -1,15 +1,13 @@
 #include "Component/Interaction/InteractionAbilityDataAsset.h"
 
-#include "Component/Interaction/InteractionAbilityInfo.h"
-#include "Component/Interaction/InteractionConditionBase.h"
-#include "Component/Interaction/InteractionOperatorBase.h"
+#include "SimpleAbilitySkill.h"
 #include "Component/Interaction/Events/InteractionEvent_TriggerByInput.h"
 #include "Component/Interaction/Operators/InteractionOperator_DropItem.h"
 #include "Component/Interaction/Operators/InteractionOperator_PickItem.h"
 
-TArray<UInteractionAbilityInfo*> UInteractionAbilityDataAsset::GetAllAbilityInfos(const AActor* InOwner) const
+TArray<USimpleAbilitySkill*> UInteractionAbilityDataAsset::GetAllAbilityInfos(AActor* InOwner) const
 {
-	TArray<UInteractionAbilityInfo*> AbilityInfos;
+	TArray<USimpleAbilitySkill*> AbilityInfos;
 
 	// 拾取相关
 	GetPickAbilityInfo(InOwner, AbilityInfos);
@@ -25,52 +23,52 @@ TArray<UInteractionAbilityInfo*> UInteractionAbilityDataAsset::GetAllAbilityInfo
 	return AbilityInfos;
 }
 
-void UInteractionAbilityDataAsset::GetPickAbilityInfo(const AActor* InOwner, TArray<UInteractionAbilityInfo*>& AbilityInfos) const
+void UInteractionAbilityDataAsset::GetPickAbilityInfo(AActor* InOwner, TArray<USimpleAbilitySkill*>& AbilityInfos) const
 {
 	if (bCanBePick)
 	{
 		// 触发类型: 点击, 作用类型: 拾取
 		const UInteractionEvent_TriggerByInput* Event = UInteractionEvent_TriggerByInput::CreateTriggerByInputEvent(EInteractionEventType::Click, EInteractionRoleType::Pick);
 		// TODO 这里拾取应该需要额外的条件检查，例如手上是否拿满了
-		const TArray<UInteractionConditionBase*> PickConditions;
-		TArray<TObjectPtr<UInteractionOperatorBase>> InPickOperators = PickOperators;
+		const TArray<USimpleAbilityConfigConditionBase*> PickConditions;
+		TArray<TObjectPtr<USimpleAbilityConfigOperatorBase>> InPickOperators = PickOperators;
 
 		InPickOperators.Add(UInteractionOperator_PickItem::CreatePickItemOperator(bAddToInfiniteBackpack));
 
-		const FString AbilityInfoName = FString::Printf(TEXT("Owner [%s], Description [按键:点击, 效果:拾取物品]"), *InOwner->GetName());
-		AbilityInfos.Add(UInteractionAbilityInfo::CreateAbilityInfo(AbilityInfoName, Event, PickConditions, InPickOperators));
+		FString SkillName = TEXT("按键:点击, 效果:拾取物品");
+		AbilityInfos.Add(USimpleAbilitySkill::CreateSkill(Event, PickConditions, InPickOperators, InOwner, SkillName));
 	}
 }
 
-void UInteractionAbilityDataAsset::GetDropAbilityInfo(const AActor* InOwner, TArray<UInteractionAbilityInfo*>& AbilityInfos) const
+void UInteractionAbilityDataAsset::GetDropAbilityInfo(AActor* InOwner, TArray<USimpleAbilitySkill*>& AbilityInfos) const
 {
 	if (bCanBePick && !bAddToInfiniteBackpack)
 	{
 		// 触发类型: 点击, 作用类型: 丢弃
 		const UInteractionEvent_TriggerByInput* Event = UInteractionEvent_TriggerByInput::CreateTriggerByInputEvent(EInteractionEventType::Click, EInteractionRoleType::Drop);
-		const TArray<UInteractionConditionBase*> DropConditions;
+		const TArray<USimpleAbilityConfigConditionBase*> DropConditions;
 
-		TArray<UInteractionOperatorBase*> DropOperators;
+		TArray<USimpleAbilityConfigOperatorBase*> DropOperators;
 		DropOperators.Add(UInteractionOperator_DropItem::CreateDropItemOperator(DropType));
 
-		const FString AbilityInfoName = FString::Printf(TEXT("Owner [%s], Description [按键:点击, 效果:丢弃物品]"), *InOwner->GetName());
-		AbilityInfos.Add(UInteractionAbilityInfo::CreateAbilityInfo(AbilityInfoName, Event, DropConditions, DropOperators));
+		FString SkillName = TEXT("按键:点击, 效果:丢弃物品");
+		AbilityInfos.Add(USimpleAbilitySkill::CreateSkill(Event, DropConditions, DropOperators, InOwner, SkillName));
 	}
 }
 
-void UInteractionAbilityDataAsset::GetPutAbilityInfo(const AActor* InOwner, TArray<UInteractionAbilityInfo*>& AbilityInfos) const
+void UInteractionAbilityDataAsset::GetPutAbilityInfo(AActor* InOwner, TArray<USimpleAbilitySkill*>& AbilityInfos) const
 {
 	if (bCanBePick && !bAddToInfiniteBackpack && bCanBePut && PutOperators.Num() > 0)
 	{
 		// 触发类型: 长按, 作用类型: 放置
 		const UInteractionEvent_TriggerByInput* Event = UInteractionEvent_TriggerByInput::CreateTriggerByInputEvent(EInteractionEventType::Press, EInteractionRoleType::Put);
 
-		const FString AbilityInfoName = FString::Printf(TEXT("Owner [%s], Description [按键:长按, 效果:放置物品]"), *InOwner->GetName());
-		AbilityInfos.Add(UInteractionAbilityInfo::CreateAbilityInfo(AbilityInfoName, Event, PutConditions, PutOperators));
+		FString SkillName = TEXT("按键:长按, 效果:放置物品");
+		AbilityInfos.Add(USimpleAbilitySkill::CreateSkill(Event, PutConditions, PutOperators, InOwner, SkillName));
 	}
 }
 
-void UInteractionAbilityDataAsset::GetClickAbilityInfo(const AActor* InOwner, TArray<UInteractionAbilityInfo*>& AbilityInfos) const
+void UInteractionAbilityDataAsset::GetClickAbilityInfo(AActor* InOwner, TArray<USimpleAbilitySkill*>& AbilityInfos) const
 {
 	if (bCanBeClick && ClickOperators.Num() > 0)
 	{
@@ -79,13 +77,13 @@ void UInteractionAbilityDataAsset::GetClickAbilityInfo(const AActor* InOwner, TA
 			// 触发类型: 点击, 作用类型: 根据情况选择
 			const UInteractionEvent_TriggerByInput* Event = UInteractionEvent_TriggerByInput::CreateTriggerByInputEvent(EInteractionEventType::Click, GetRoleTypeByEffectPlaceType(PlaceType));
 
-			const FString AbilityInfoName = FString::Printf(TEXT("Owner [%s], Description [按键:点击, 作用:%s]"), *InOwner->GetName(), *EInteractionRoleTypeToString(PlaceType));
-			AbilityInfos.Add(UInteractionAbilityInfo::CreateAbilityInfo(AbilityInfoName, Event, ClickConditions, ClickOperators));
+			FString SkillName = FString::Printf(TEXT("按键:点击, 作用:%s"), *EInteractionRoleTypeToString(PlaceType));
+			AbilityInfos.Add(USimpleAbilitySkill::CreateSkill(Event, ClickConditions, ClickOperators, InOwner, SkillName));
 		}
 	}
 }
 
-void UInteractionAbilityDataAsset::GetPressAbilityInfo(const AActor* InOwner, TArray<UInteractionAbilityInfo*>& AbilityInfos) const
+void UInteractionAbilityDataAsset::GetPressAbilityInfo(AActor* InOwner, TArray<USimpleAbilitySkill*>& AbilityInfos) const
 {
 	if (bCanBePress && PressOperators.Num() > 0)
 	{
@@ -94,8 +92,8 @@ void UInteractionAbilityDataAsset::GetPressAbilityInfo(const AActor* InOwner, TA
 			// 触发类型: 点击, 作用类型: 根据情况选择
 			const UInteractionEvent_TriggerByInput* Event = UInteractionEvent_TriggerByInput::CreateTriggerByInputEvent(EInteractionEventType::Press, GetRoleTypeByEffectPlaceType(PlaceType));
 
-			const FString AbilityInfoName = FString::Printf(TEXT("Owner [%s], Description [按键:长按, 作用:%s]"), *InOwner->GetName(), *EInteractionRoleTypeToString(PlaceType));
-			AbilityInfos.Add(UInteractionAbilityInfo::CreateAbilityInfo(AbilityInfoName, Event, PressConditions, PressOperators));
+			FString SkillName = FString::Printf(TEXT("按键:长按, 作用:%s"), *EInteractionRoleTypeToString(PlaceType));
+			AbilityInfos.Add(USimpleAbilitySkill::CreateSkill(Event, PressConditions, PressOperators, InOwner, SkillName));
 		}
 	}
 }

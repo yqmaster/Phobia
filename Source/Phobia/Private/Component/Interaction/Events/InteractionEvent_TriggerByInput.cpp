@@ -10,11 +10,29 @@ UInteractionEvent_TriggerByInput* UInteractionEvent_TriggerByInput::CreateTrigge
 	return Event;
 }
 
-void UInteractionEvent_TriggerByInput::EventActive(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
+void UInteractionEvent_TriggerByInput::InitEvent(AActor* InOwner)
 {
-	Super::EventActive(OwnerActor, OwnerComponent);
+	Super::InitEvent(InOwner);
 
-	if (OwnerComponent)
+	ItemComponent = InOwner->FindComponentByClass<UInteractionItemComponent>();
+	if (!ItemComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s Init failed, [%s] does not have UInteractionItemComponent"), *GetConfigInfo(), *InOwner->GetName());
+	}
+}
+
+void UInteractionEvent_TriggerByInput::UnInitEvent(AActor* InOwner)
+{
+	ItemComponent = nullptr;
+
+	Super::UnInitEvent(InOwner);
+}
+
+void UInteractionEvent_TriggerByInput::EventActive(const AActor* InOwner)
+{
+	Super::EventActive(InOwner);
+
+	if (ItemComponent)
 	{
 		switch (TriggerType)
 		{
@@ -22,10 +40,10 @@ void UInteractionEvent_TriggerByInput::EventActive(const AActor* OwnerActor, UIn
 			UE_LOG(LogTemp, Warning, TEXT("UInteractionEvent_TriggerInScene::EventActive TriggerType is None"));
 			break;
 		case EInteractionEventType::Click:
-			OwnerComponent->OnInteractByClick.AddDynamic(this, &UInteractionEvent_TriggerByInput::OnInteractionByClick);
+			ItemComponent->OnInteractByClick.AddDynamic(this, &UInteractionEvent_TriggerByInput::OnInteractionByClick);
 			break;
 		case EInteractionEventType::Press:
-			OwnerComponent->OnInteractByPress.AddDynamic(this, &UInteractionEvent_TriggerByInput::OnInteractionByPress);
+			ItemComponent->OnInteractByPress.AddDynamic(this, &UInteractionEvent_TriggerByInput::OnInteractionByPress);
 			break;
 		default: ;
 			UE_LOG(LogTemp, Warning, TEXT("Invalid TriggerType"));
@@ -33,9 +51,9 @@ void UInteractionEvent_TriggerByInput::EventActive(const AActor* OwnerActor, UIn
 	}
 }
 
-void UInteractionEvent_TriggerByInput::EventDeActive(const AActor* OwnerActor, UInteractionItemComponent* OwnerComponent)
+void UInteractionEvent_TriggerByInput::EventDeActive(const AActor* InOwner)
 {
-	if (OwnerComponent)
+	if (ItemComponent)
 	{
 		switch (TriggerType)
 		{
@@ -43,20 +61,20 @@ void UInteractionEvent_TriggerByInput::EventDeActive(const AActor* OwnerActor, U
 			UE_LOG(LogTemp, Warning, TEXT("UInteractionEvent_TriggerInScene::EventActive TriggerType is None"));
 			break;
 		case EInteractionEventType::Click:
-			OwnerComponent->OnInteractByClick.RemoveDynamic(this, &UInteractionEvent_TriggerByInput::OnInteractionByClick);
+			ItemComponent->OnInteractByClick.RemoveDynamic(this, &UInteractionEvent_TriggerByInput::OnInteractionByClick);
 			break;
 		case EInteractionEventType::Press:
-			OwnerComponent->OnInteractByPress.RemoveDynamic(this, &UInteractionEvent_TriggerByInput::OnInteractionByPress);
+			ItemComponent->OnInteractByPress.RemoveDynamic(this, &UInteractionEvent_TriggerByInput::OnInteractionByPress);
 			break;
 		default: ;
 			UE_LOG(LogTemp, Warning, TEXT("Invalid TriggerType"));
 		}
 	}
 
-	Super::EventDeActive(OwnerActor, OwnerComponent);
+	Super::EventDeActive(InOwner);
 }
 
-void UInteractionEvent_TriggerByInput::OnInteractionByClick(AActor* TakerActor, EInteractionRoleType InRoleType)
+void UInteractionEvent_TriggerByInput::OnInteractionByClick(AActor* TakerActor, const EInteractionRoleType InRoleType)
 {
 	if (InRoleType == RoleType)
 	{
@@ -65,7 +83,7 @@ void UInteractionEvent_TriggerByInput::OnInteractionByClick(AActor* TakerActor, 
 	}
 }
 
-void UInteractionEvent_TriggerByInput::OnInteractionByPress(AActor* TakerActor, EInteractionRoleType InRoleType, bool IsStart)
+void UInteractionEvent_TriggerByInput::OnInteractionByPress(AActor* TakerActor, const EInteractionRoleType InRoleType, const bool IsStart)
 {
 	if (InRoleType == RoleType)
 	{

@@ -5,7 +5,7 @@
 #include "InteractionItemComponent.generated.h"
 
 enum class EInteractionRoleType : uint8;
-class UInteractionAbilityInfo;
+class USimpleAbilitySkill;
 class UInteractionAbilityDataAsset;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInteractByClick, AActor*, TakerActor, EInteractionRoleType, RoleType);
@@ -45,5 +45,5 @@ protected:
 
 private:
 	UPROPERTY(Transient)
-	TArray<TObjectPtr<UInteractionAbilityInfo>> AbilityInfos;
+	TArray<TObjectPtr<USimpleAbilitySkill>> AbilityInfos;
 };
